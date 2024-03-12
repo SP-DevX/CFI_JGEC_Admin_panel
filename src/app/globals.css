@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*:focus {
+  box-shadow: none !important;
+}
+body{
+  width: 100vw;
+  height: 100vh;
+  max-height: 100vh;
+  box-sizing: border-box;
+  overflow-y: hidden !important;
+}
+
+@layer components {
+  .button {
+    @apply w-32 text-center py-2.5 rounded-lg font-medium cursor-pointer ms-auto bg-btnBg text-white;
+  }
+  .not_found {
+    @apply text-center text-4xl font-semibold text-gray-600 my-20;
+  }
+  .triangle{
+    @apply w-0 h-0 border-t-[20px] border-t-transparent border-r-[20px] border-white border-b-[20px] border-r-transparent rotate-45
+  }
+}

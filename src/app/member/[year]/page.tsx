@@ -21,9 +21,15 @@ import {
 } from "react-icons/fa";
 import { MdEmail, MdCall, MdDelete } from "react-icons/md";
 import { FaMagnifyingGlass } from "react-icons/fa6";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import { useParams } from "next/navigation";
 import { membersType, resMembersType } from "@/type";
+
+
+export interface ImagType {
+    src: string | StaticImageData | URL
+}
+
 
 const Members = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -32,7 +38,7 @@ const Members = () => {
     const [isUpdate, setIsUpdate] = useState(false);
     const [resAllMembers, setResAllMembers] = useState<resMembersType[]>();
     const [searchVal, setSearchVal] = useState("");
-    const [photo, setPhotoUrl] = useState<string | URL>("");
+    const [photo, setPhotoUrl] = useState<string | StaticImageData>("");
     const [memberDetails, setMemberDetails] = useState<membersType>({
         photo: "",
         name: "",
@@ -297,16 +303,7 @@ const Members = () => {
                                                 id="file"
                                                 accept=".jpg, .jpeg, .png"
                                                 onChange={uploadPhoto}
-                                            />
-                                            {photo && (
-                                                <Link
-                                                    target="_blank"
-                                                    href={photo}
-                                                    className="text-sm text-blue-500 cursor-pointer ms-4"
-                                                >
-                                                    View
-                                                </Link>
-                                            )}
+                                            /> 
                                         </div>
                                         <h1 className="text-lg font-semibold text-gray-800 my-2">
                                             Add Social Media links
@@ -370,13 +367,13 @@ const Members = () => {
                                                 return (
                                                     <Table.Row key={i} className="bg-white">
                                                         <Table.Cell className="whitespace-nowrap capitalize font-medium text-gray-900 flex items-center">
-                                                            <Image
+                                                            {photo && <Image
                                                                 src={photo}
                                                                 alt="photo"
                                                                 className="min-w-12 w-12 h-12 rounded-full object-cover me-3"
                                                                 width={50}
                                                                 height={50}
-                                                            />
+                                                            />}
                                                             {name}
                                                         </Table.Cell>
                                                         <Table.Cell className=" text-nowrap">

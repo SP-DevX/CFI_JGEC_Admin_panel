@@ -19,7 +19,7 @@ export interface NoticeType {
     _id?: string | ObjectId,
 }
 export interface photoUrlType {
-    photo?: string | Url
+    photo?: string | StaticImageData
 }
 
 export interface EventsItemsType {
@@ -35,7 +35,7 @@ export interface EventsItemsType {
 
 export interface membersType {
     name: string,
-    photo?: string | URL,
+    photo?: string | StaticImageData,
     position: string,
     year: string | string[],
     dept: string,
@@ -55,7 +55,7 @@ export interface resMembersType extends membersType {
 }
 
 export interface ComponentsType {
-    photo?: string | Url | StaticImageData,
+    photo?: string | StaticImageData,
     name: string,
     modelNo: string,
     qty: number | null,

@@ -13,7 +13,7 @@ import { FaUserEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 
 const Certificate = () => {
-    const [openModal, setOpenModal] = useState();
+    const [openModal, setOpenModal] = useState(false);
     const [loading, setLoading] = useState(false);
     const [certDetails, setCertDetails] = useState({
         category: "",
@@ -34,17 +34,17 @@ const Certificate = () => {
         }
     ])
 
-    const uploadPhoto = async (e) => {
+    const uploadPhoto = async (e: any) => {
         const file = e.target.files[0];
         if (file) {
             setLoading(true);
             const fileUrl = await fileToUrlLink(file, `certificate/${certDetails.category}`);
-            setCertDetails({ ...certDetails, fileUrl })
+            if (fileUrl) setCertDetails({ ...certDetails, fileUrl })
             setLoading(false);
         }
     }
 
-    const onChangeValues = (e) => {
+    const onChangeValues = (e:any) => {
         const { name, value } = e.target;
         setCertDetails({ ...certDetails, [name]: value });
     }

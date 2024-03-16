@@ -14,12 +14,13 @@ import { FaMagnifyingGlass } from 'react-icons/fa6';
 import { FaRegEdit } from 'react-icons/fa';
 import { MdDelete } from 'react-icons/md';
 import { message } from "antd"
+import { StaticImageData } from 'next/image';
 
 const Project = () => {
     const [openModal, setOpenModal] = useState(false);
     const [loading, setLoading] = useState(false);
     const [isUpdate, setIsUpdate] = useState(false);
-    const [photo, setPhoto] = useState();
+    const [photo, setPhoto] = useState<string | StaticImageData>();
 
     const [projectValues, setProjectValues] = useState({
         projectId: `CFI-${Math.floor(Math.random() * 10000)}`,
@@ -40,22 +41,25 @@ const Project = () => {
         setIsUpdate(false);
         resetValues();
     }
-    const uploadPhoto = async (e) => {
+    const uploadPhoto = async (e: any) => {
         const imgFile = e.target.files[0];
         if (imgFile) {
             const imgUrl = await fileToUrlLink(imgFile, 'Alumni');
-            setPhoto(imgUrl)
-            alert('file uploaded');
+            if (imgUrl) {
+                setPhoto(imgUrl)
+                alert('file uploaded');
+            }
         }
     }
-    const openUpdate = async (values) => {
+    const openUpdate = async (values: any) => {
         const { projectId, title, overview, name, year, demo, details, code, photo } = values;
-        setProjectValues({ projectId, title, overview, name, year, demo, details, code, photo });
+        setProjectValues({ projectId, title, overview, name, year, demo, details, code });
+        setPhoto(photo)
         setOpenModal(true);
         setIsUpdate(true);
     }
     const resetValues = () => {
-        setProjectValues({ projectId: "", title: "", overview: "", name: "", year: "", demo: "", details: "", code: "", photo: "" });
+        setProjectValues({ projectId: "", title: "", overview: "", name: "", year: "", demo: "", details: "", code: "" });
     }
     const validate = Yup.object({
         title: Yup.string().required("title is required"),
@@ -66,10 +70,10 @@ const Project = () => {
         code: Yup.string().required("code is required"),
     })
 
-    const allProjects = async (values) => {
+    const allProjects = async () => {
         try {
             setLoading(true);
-            const { data } = await axios.get('/api/project', values)
+            const { data } = await axios.get('/api/project')
             setProjectList(data.projects);
         } catch (error) {
             console.error(error);
@@ -78,7 +82,7 @@ const Project = () => {
         }
     }
 
-    const addProject = async (values) => {
+    const addProject = async (values: any) => {
         try {
             setLoading(true);
             values.photo = photo;
@@ -93,7 +97,7 @@ const Project = () => {
         }
     }
 
-    const updateProject = async (values) => {
+    const updateProject = async (values: any) => {
         try {
             setLoading(true);
             const { data } = await axios.post('/api/project/update', values)
@@ -109,7 +113,7 @@ const Project = () => {
         }
     }
 
-    const deleteProject = async (values) => {
+    const deleteProject = async (values: any) => {
         try {
             setLoading(true);
             const { data } = await axios.post('/api/project/remove', values);

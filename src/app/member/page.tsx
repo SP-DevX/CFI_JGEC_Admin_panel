@@ -17,7 +17,7 @@ import {
     FaInstagram,
     FaLinkedin,
 } from "react-icons/fa";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import TeamIcon from "@/assets/team.png"
 import { membersType } from "@/type";
 
@@ -26,7 +26,7 @@ const Alumni = () => {
     const [openModal, setOpenModal] = useState(false);
     const [loading, setLoading] = useState(false);
     const [yearList, setYearList] = useState<string[]>([]);
-    const [photo, setPhotoUrl] = useState<string | URL>("");
+    const [photo, setPhotoUrl] = useState<string | StaticImageData>("");
     const [memberDetails, setMemberDetails] = useState<membersType>({
         name: "",
         position: "",
@@ -202,10 +202,7 @@ const Alumni = () => {
                                                 id="file"
                                                 accept=".jpg, .jpeg, .png"
                                                 onChange={uploadPhoto}
-                                            />
-                                            {photo &&
-                                                <Link target="_blank" href={photo} className="text-sm text-blue-500 cursor-pointer ms-4">View</Link>
-                                            }
+                                            /> 
                                         </div>
                                         <h1 className="text-lg font-semibold text-gray-800 my-2">
                                             Add Social Media links

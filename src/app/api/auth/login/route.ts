@@ -5,18 +5,28 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 
 connectDB();
+
 export async function POST(req: NextRequest) {
     try {
         const reqBody = await req.json();
         const { email, password } = reqBody;
-        const isUserExist = await User.findOne({ email });
-        if (!isUserExist)
+        const user = await User.findOne({ email });
+        if (!user)
             return NextResponse.json({ message: "User is not exist" }, { status: 404 });
-        const isValidPassword = await bcrypt.compare(password, isUserExist.password);
+        const isValidPassword = await bcrypt.compare(password, user.password);
         if (!isValidPassword)
             return NextResponse.json({ message: "unauthorized user" }, { status: 401 });
-        const token = jwt.sign({ id: isUserExist._id }, process.env.JWT_SECRETKEY!);
-        return NextResponse.json({ message: "log in successful", token, user: isUserExist }, { status: 201 })
+        // create token
+        const token = await jwt.sign({ id: user._id }, process.env.JWT_SECRETKEY!, {
+            expiresIn: "1d",
+        });
+        // create response
+        const response = NextResponse.json(
+            { user, message: "log in successful" },
+            { status: 201 }
+        );
+        response.cookies.set("token", token, { httpOnly: true });
+        return response;
     } catch (error) {
         console.log(error);
         return NextResponse.json({ message: "Internal Server Error" }, { status: 500 })

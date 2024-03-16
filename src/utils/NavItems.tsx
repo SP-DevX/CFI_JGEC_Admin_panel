@@ -31,14 +31,14 @@ export const ListItems: ListItemsType[] = [
         icon: <HiOutlineTrophy size={20} />,
     },
     {
-        name: "alumni",
-        link: "/alumni",
+        name: "members",
+        link: "/member",
         icon: <PiUsersThreeFill size={20} />,
-    },
+    }, 
     {
-        name: "teams",
-        link: "/team",
-        icon: <PiMicrosoftTeamsLogoDuotone size={20} />,
+        name: "stock",
+        link: "/stock",
+        icon: <FaGear size={20} />,
     },
     {
         name: "projects",

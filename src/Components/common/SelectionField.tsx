@@ -5,8 +5,9 @@ interface inputTypes {
     data: (string | number | Object)[],
     isInput?: boolean,
     label?: string,
-    name: string, 
+    name: string,
     type?: string,
+    disabled?: boolean
 }
 
 const SelectionField: React.FC<inputTypes> = ({ data, label, ...props }) => {

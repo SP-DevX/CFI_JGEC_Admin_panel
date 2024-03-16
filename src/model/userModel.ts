@@ -13,6 +13,18 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true 
     },
+    isVerified: {
+        type: Boolean,
+        default: true,
+    },
+    isAdmin: {
+        type: Boolean,
+        default: true,
+    },
+    canWrite: {
+        type: Boolean,
+        default: true,
+    },
 })
 
 const User = mongoose.models.User || mongoose.model('User', userSchema);

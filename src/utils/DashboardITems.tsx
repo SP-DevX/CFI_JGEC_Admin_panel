@@ -8,30 +8,30 @@ export const DashboardItems = [
         name: "Notices",
         path: "/notice",
         icon: <GrAnnounce size={20} />,
-        color: "bg-[#B01CE3]"
+        color: "#B01CE3"
     },
     {
         name: "events",
         path: "/events",
         icon: <HiOutlineTrophy size={20} />,
-        color: "bg-[#EE11BF]",
+        color: "#EE11BF",
     },
     {
         name: "projects",
         path: "/projects",
         icon: <FaGear size={20} />,
-        color: "bg-[#2FB0D0]"
+        color: "#2FB0D0"
     },
     {
         name: "certificates",
         path: "/certificate",
         icon: <GrCertificate size={20} />,
-        color: "bg-[#2CD34C]"
+        color: "#2CD34C"
     },
     {
         name: "Alerts",
         path: "/alert",
         icon: <IoNotificationsCircleOutline size={20} />,
-        color: "bg-[#F1220E]"
+        color: "#F1220E"
     },
 ]

@@ -16,7 +16,7 @@ const Dashboard = () => {
             const { name, path, color, icon } = item;
             return (
               <Link href={path} key={name}>
-                <div className={`w-full h-28 rounded-xl  p-4 text-white bg-[#B01CE3] ${color}`}>
+                <div className={`w-full h-28 rounded-xl  p-4 text-white`} style={{ backgroundColor: color }}>
                   <div className='flex justify-between items-center mb-4'>
                     <h1 className='text-lg font-semibold capitalize'>{name}</h1>
                     {icon}

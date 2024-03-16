@@ -9,6 +9,7 @@ interface inputTypes {
     icon?: IconType,
     placeholder?: string,
     type?: string,
+    disabled?: boolean
 }
 
 

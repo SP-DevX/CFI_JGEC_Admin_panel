@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import ReduxProvider from "@/redux/ReduxProvider"; 
+import ReduxProvider from "@/redux/ReduxProvider";
 import Sidebar from "@/Components/Sidebar";
 import { ToastContainer } from "react-toastify";
 import TopBar from "@/Components/TopBar";
@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} w-full h-screen flex  bg-bodyBg`}>
+      <body className={`${inter.className} w-full h-screen flex  bg-[rgb(241,245,249)]`}>
         <ReduxProvider>
           <div className="w-[20%] max-w-sm h-full">
             <Sidebar />

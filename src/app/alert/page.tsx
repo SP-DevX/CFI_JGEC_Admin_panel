@@ -11,7 +11,7 @@ import { HiCheck } from 'react-icons/hi2';
 import InputField from '@/Components/common/InputField';
 import { Form, Formik } from 'formik';
 import SelectionField from '@/Components/common/SelectionField';
-import { Status } from '@/assets/data';
+import { Status } from '@/utils/data';
 
 
 const Alert = () => {

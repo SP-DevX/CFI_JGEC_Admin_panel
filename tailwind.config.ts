@@ -4,15 +4,16 @@ const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     'node_modules/flowbite-react/lib/esm/**/*.js',
   ],
   theme: {
     extend: {
       colors: {
-        navBg: "rgb(28 36 52)",
-        topBg: "white",
-        bodyBg: "rgb(241 245 249 )",
+        navBg: "rgb(28,36,52)",
+        topBg: "#ffffff",
+        bodyBg: "rgb(241,245,249)",
         btnBg: "#A90DF2",
         title: "#000000",
         subtitle: "#0d1216",

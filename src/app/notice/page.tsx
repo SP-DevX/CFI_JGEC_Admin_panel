@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import { HiArrowNarrowRight, HiCalendar } from "react-icons/hi";
 import axios from "axios";
 import Loader from "@/Components/common/Loader";
-import { fileToUrlLink } from "@/assets/data";
+import { fileToUrlLink } from "@/utils/data";
 import { NoticeType } from "@/type";
 import Layout from "@/Components/common/CommonLayout";
 import { FaEdit } from "react-icons/fa";

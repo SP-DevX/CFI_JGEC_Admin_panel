@@ -15,7 +15,7 @@ import { Form, Formik } from "formik";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import Link from "next/link";
 import axios from "axios";
-import { fileToUrlLink } from "@/assets/data";
+import { fileToUrlLink } from "@/utils/data";
 import Loader from "@/Components/common/Loader";
 import * as Yup from "yup";
 import { useAppDispatch } from "@/redux/Store";

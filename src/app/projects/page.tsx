@@ -5,7 +5,7 @@ import Layout from '@/Components/common/CommonLayout'
 import { Button, FileInput, Label, Modal, Table, TextInput } from 'flowbite-react'
 import { Form, Formik } from 'formik';
 import InputField from '@/Components/common/InputField';
-import { fileToUrlLink } from '@/assets/data';
+import { fileToUrlLink } from '@/utils/data';
 import * as Yup from "yup";
 import axios from 'axios';
 import Loader from '@/Components/common/Loader';

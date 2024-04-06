@@ -19,12 +19,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} grid grid-cols-10 bg-bodyBg`}>
+      <body className={`${inter.className} w-full h-screen flex  bg-bodyBg`}>
         <ReduxProvider>
-          <div className="col-span-2 h-full">
+          <div className="w-[20%] max-w-sm h-full">
             <Sidebar />
           </div>
-          <div className="col-span-8 h-full overflow-y-scroll relative">
+          <div className="w-[80%] h-full overflow-y-scroll relative">
             <TopBar />
             {children}
             <ToastContainer />

@@ -9,7 +9,7 @@ import { FaMagnifyingGlass } from "react-icons/fa6";
 import { FaRegEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import InputField from "@/Components/common/InputField";
-import { fileToUrlLink } from "@/assets/data";
+import { fileToUrlLink } from "@/utils/data";
 import { message } from "antd";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";

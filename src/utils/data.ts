@@ -1,4 +1,4 @@
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { storage } from "@/firebase";
 import { v4 } from "uuid";
 
@@ -16,6 +16,14 @@ export const fileToUrlLink = async (file: File, fileType: string) => {
         const res = await uploadBytes(fileRef, file);
         const fileUrl = await getDownloadURL(res.ref);
         return fileUrl;
+    }
+    else console.log('file is empty');
+}
+export const deleteStorage = async (file: any, fileType: string) => {
+    if (file) {
+        const storage = getStorage();
+        const fileRef = ref(storage, `${fileType}/${file}`);
+        deleteObject(fileRef).then((data) => console.log(data)).catch((err) => console.log(err))
     }
     else console.log('file is empty');
 }

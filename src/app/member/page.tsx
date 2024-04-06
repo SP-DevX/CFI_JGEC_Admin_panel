@@ -6,7 +6,7 @@ import InputField from "@/Components/common/InputField";
 import SelectionField from "@/Components/common/SelectionField";
 import Loader from "@/Components/common/Loader";
 import { Button, Label, Modal, FileInput } from "flowbite-react";
-import { departments, fileToUrlLink, positions, years } from "@/assets/data";
+import { departments, fileToUrlLink, positions, years } from "@/utils/data";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";

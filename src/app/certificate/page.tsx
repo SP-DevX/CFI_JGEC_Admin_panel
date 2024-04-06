@@ -6,7 +6,7 @@ import { Button, FileInput, Label, Modal, Select, Table, TextInput } from "flowb
 import { Form, Formik } from 'formik';
 import * as Yup from "yup";
 import InputField from '@/Components/common/InputField';
-import { eventCategories, fileToUrlLink } from '@/assets/data';
+import { eventCategories, fileToUrlLink } from '@/utils/data';
 import Link from 'next/link';
 import Loader from '@/Components/common/Loader';
 import { FaUserEdit } from "react-icons/fa";

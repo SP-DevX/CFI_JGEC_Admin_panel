@@ -7,7 +7,7 @@ import SelectionField from "@/Components/common/SelectionField";
 import Loader from "@/Components/common/Loader";
 import { Table } from "flowbite-react";
 import { Button, Label, Modal, TextInput, FileInput } from "flowbite-react";
-import { departments, fileToUrlLink, positions, years } from "@/assets/data";
+import { deleteStorage, departments, fileToUrlLink, positions, years } from "@/utils/data";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
@@ -70,7 +70,7 @@ const Members = () => {
     const uploadPhoto = async (e: any) => {
         const imgFile = e.target.files[0];
         if (imgFile) {
-            const imgUrl = await fileToUrlLink(imgFile, `Alumni/`);
+            const imgUrl = await fileToUrlLink(imgFile, `members/`);
             if (imgUrl) {
                 setPhotoUrl(imgUrl);
                 message.success("photo Upload");
@@ -202,6 +202,7 @@ const Members = () => {
     const removeMembersDetails = async (values: membersType) => {
         try {
             setLoading(true);
+            deleteStorage(values.photo, 'members')
             const { data } = await axios.post(`/api/members/remove`, values);
             message.success(data.message);
             getAllMembers();
@@ -219,7 +220,7 @@ const Members = () => {
     }, [year]);
 
     return (
-        <Layout header="Alumni">
+        <Layout header="Members">
             {loading ? (
                 <Loader />
             ) : (
@@ -303,7 +304,7 @@ const Members = () => {
                                                 id="file"
                                                 accept=".jpg, .jpeg, .png"
                                                 onChange={uploadPhoto}
-                                            /> 
+                                            />
                                         </div>
                                         <h1 className="text-lg font-semibold text-gray-800 my-2">
                                             Add Social Media links

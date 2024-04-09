@@ -80,7 +80,7 @@ const LogIn: React.FC = () => {
                                                 Forget Password?
                                             </Link>
                                             <div className='my-4'>
-                                                <button className='button  bg-green-500 me-6' type='submit'>  Log in </button>
+                                                <button className='button  bg-green-500 me-6' type='submit'>Log in </button>
                                                 <button className='button bg-red-500' type='reset'>Reset </button>
                                             </div>
                                         </Form>

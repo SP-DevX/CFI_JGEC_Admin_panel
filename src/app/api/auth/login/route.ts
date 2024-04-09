@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
         if (!isValidPassword)
             return NextResponse.json({ message: "unauthorized user" }, { status: 401 });
         // create token
+        if (!user.isVerify) return NextResponse.json({ message: "unverified user" }, { status: 310 });
         const token = await jwt.sign({ id: user._id }, process.env.JWT_SECRETKEY!, {
             expiresIn: "1d",
         });

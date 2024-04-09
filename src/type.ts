@@ -7,7 +7,8 @@ export type props = {
     closeModal: CallableFunction
 }
 export interface UserType {
-    username?: string,
+    photo?: string,
+    name?: string,
     email: string,
     password: string
 }
@@ -35,7 +36,7 @@ export interface EventsItemsType {
 
 export interface membersType {
     name: string,
-    photo?: string | StaticImageData,
+    photo?: string,
     position: string,
     year: string | string[],
     dept: string,
@@ -62,4 +63,20 @@ export interface ComponentsType {
 }
 export interface resComponentsType extends ComponentsType {
     _id: ObjectId
+}
+
+export interface RegisterUserType {
+    _id: string;
+    name: string;
+    email: string;
+    password: string;
+    photo: string;
+    isVerify: boolean;
+    isAdmin: boolean;
+    forgotPasswordToken: string;
+    forgotPasswordTokenExpiry: Date,
+    verifyToken: string;
+    verifyTokenExpiry: Date,
+    canRead: boolean;
+    canWrite: boolean;
 }

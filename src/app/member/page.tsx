@@ -26,7 +26,7 @@ const Alumni = () => {
     const [openModal, setOpenModal] = useState(false);
     const [loading, setLoading] = useState(false);
     const [yearList, setYearList] = useState<string[]>([]);
-    const [photo, setPhotoUrl] = useState<string | StaticImageData>("");
+    const [photo, setPhotoUrl] = useState<string>("");
     const [memberDetails, setMemberDetails] = useState<membersType>({
         name: "",
         position: "",

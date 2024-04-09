@@ -38,7 +38,7 @@ const Members = () => {
     const [isUpdate, setIsUpdate] = useState(false);
     const [resAllMembers, setResAllMembers] = useState<resMembersType[]>();
     const [searchVal, setSearchVal] = useState("");
-    const [photo, setPhotoUrl] = useState<string | StaticImageData>("");
+    const [photo, setPhotoUrl] = useState("");
     const [memberDetails, setMemberDetails] = useState<membersType>({
         photo: "",
         name: "",
@@ -202,11 +202,12 @@ const Members = () => {
     const removeMembersDetails = async (values: membersType) => {
         try {
             setLoading(true);
-            deleteStorage(values.photo, 'members')
+            if (values.photo) deleteStorage(values.photo)
             const { data } = await axios.post(`/api/members/remove`, values);
             message.success(data.message);
             getAllMembers();
         } catch (error) {
+            console.log(error);
             // @ts-ignore
             const errMsg = error?.response?.data?.message;
             message.error(errMsg);

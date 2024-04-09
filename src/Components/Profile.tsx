@@ -4,6 +4,7 @@ import { props } from '@/type'
 import { message } from 'antd'
 import axios from 'axios'
 import { Modal } from 'flowbite-react'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 import { MdLogout } from 'react-icons/md'
@@ -31,6 +32,7 @@ const Profile: React.FC<props> = ({ openModal, closeModal }) => {
                 </Modal.Header>
                 <Modal.Body>
                     <div className='py-4 px-6 font-semibold text-title space-y-2'>
+                        <Image src={user.photo} alt='photo' width={150} height={150} className='mb-3'/>
                         <h1 >UserId: <span className='text-subtitle ms-2'>{user._id}</span></h1>
                         <h1>Name: <span className='text-subtitle ms-2'>{user.name}</span></h1>
                         <h1>Email: <span className='text-subtitle ms-2'>{user.email}</span></h1>

@@ -1,32 +1,46 @@
 "use client"
 
-import { Button, Modal, Spinner } from 'flowbite-react';
+import { FileInput, Modal, Spinner } from 'flowbite-react';
 import { useState } from 'react';
 import axios from 'axios'
 import { Form, Formik } from 'formik';
 import { MdEmail, MdPerson } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 import * as Yup from 'yup'
-import { UserType, props } from '@/type';
+import { UserType } from '@/type';
 import { message } from "antd"
 import Image from 'next/image';
 import Logo from "@/assets/logo_dark.png"
 import Link from 'next/link';
 import InputField from '@/Components/common/InputField';
 import { useRouter } from 'next/navigation';
+import { fileToUrlLink } from '@/utils/data';
 
 const Register: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const [photo, setPhoto] = useState("");
+
+    const uploadPhoto = async (e: any) => {
+        const imgFile = e.target.files[0];
+        if (imgFile) {
+            const imgUrl = await fileToUrlLink(imgFile, `users/`);
+            if (imgUrl) {
+                setPhoto(imgUrl);
+                message.success("photo Upload");
+            } else message.error("photo is not uploaded");
+        } else message.error("Photo is not uploaded");
+    };
 
     const registerReq = async (userDetails: UserType) => {
         setLoading(true);
         try {
+            userDetails!.photo = photo;
+            if(!userDetails!.photo)return message.error("photo is required");
             const { data } = await axios.post("/api/auth/register", userDetails)
             message.success(data.message);
             router.push("/login")
-        } catch (error) {
-            // console.error(error);
+        } catch (error) { 
             // @ts-ignore
             const errMsg = error?.response?.data?.message;
             message.error(errMsg);
@@ -72,6 +86,11 @@ const Register: React.FC = () => {
                                 >
                                     {(formik) => (
                                         <Form>
+                                            <FileInput
+                                                id="file"
+                                                accept=".jpg, .jpeg, .png"
+                                                onChange={uploadPhoto}
+                                            />
                                             <InputField name='name' label='Your name' placeholder="John Deol" icon={MdPerson} />
                                             <InputField name='email' label='Your Email' placeholder="name@gmail.com" icon={MdEmail} />
                                             <InputField name='password' type="password" label='Your Password' placeholder="******" icon={RiLockPasswordFill} />

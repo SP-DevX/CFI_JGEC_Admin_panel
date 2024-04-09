@@ -11,13 +11,25 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true 
+        required: true
     },
-    isVerified: {
+    photo: {
+        type: String,
+        required: true
+    },
+    isVerify: {
         type: Boolean,
-        default: true,
+        default: false
     },
     isAdmin: {
+        type: Boolean,
+        default: false
+    },
+    forgotPasswordToken: String,
+    forgotPasswordTokenExpiry: Date,
+    verifyToken: String,
+    verifyTokenExpiry: Date,
+    canRead: {
         type: Boolean,
         default: true,
     },

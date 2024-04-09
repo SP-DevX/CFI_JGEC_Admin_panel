@@ -1,6 +1,8 @@
+import * as firebase from "firebase/app";
 import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { storage } from "@/firebase";
 import { v4 } from "uuid";
+import { message } from "antd";
 
 
 export const positions: string[] = ['---Select---', 'Secretory', 'Web Lead', 'Technical Head']
@@ -17,13 +19,16 @@ export const fileToUrlLink = async (file: File, fileType: string) => {
         const fileUrl = await getDownloadURL(res.ref);
         return fileUrl;
     }
-    else console.log('file is empty');
+    else console.log('Invalid file');
 }
-export const deleteStorage = async (file: any, fileType: string) => {
-    if (file) {
-        const storage = getStorage();
-        const fileRef = ref(storage, `${fileType}/${file}`);
-        deleteObject(fileRef).then((data) => console.log(data)).catch((err) => console.log(err))
+
+export const deleteStorage = async (fileUrl: string) => {
+    try {
+        const fileRef = ref(storage, fileUrl);
+        await deleteObject(fileRef);
+        message.success('File removed from storage');
+    } catch (error) {
+        console.error('Error deleting file:', error);
+        message.error('File not removed from storage');
     }
-    else console.log('file is empty');
 }

@@ -41,12 +41,12 @@ export const mailer = async ({ email, emailType, userId }: props) => {
       port: 465,
       secure: true,
       auth: {
-        user: "cfi@jgec.ac.in",
-        pass: "muazpofdvtwjsatm",
+        user: process.env.NEXT_PUBLIC_USER_ID,
+        pass: process.env.NEXT_PUBLIC_PASSWORD,
       },
     });
     const mailOption = {
-      from: "cfi@jgec.ac.in",
+      from: process.env.NEXT_PUBLIC_USER_ID,
       to: email,
       subject:
         emailType === "VERIFY" ? "Verify your email" : "Reset your password",

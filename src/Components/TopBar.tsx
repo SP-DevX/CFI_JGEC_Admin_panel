@@ -12,8 +12,8 @@ function TopBar() {
     return (
         <div className="fixed top-0 z-50 w-[80%] h-20 bg-topBg px-10 flex justify-end items-center shadow-xl">
             {
-                <div className="flex text-2xl text-subtitle">
-                    <Link href={'/alerts'}><IoNotifications className="cursor-pointer mx-2" /></Link>
+                <div className="flex text-2xl text-gray-600">
+                    <Link href={'/alert'}><IoNotifications className="cursor-pointer mx-2" /></Link>
                     <Link href={'https://mail.google.com'}> <MdEmail className="cursor-pointer mx-2" /></Link>
                     <FaCircleUser
                         className="cursor-pointer mx-2"

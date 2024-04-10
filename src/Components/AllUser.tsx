@@ -8,6 +8,7 @@ import { MdDelete, MdPending } from 'react-icons/md'
 import Loader from './common/Loader'
 import Image from 'next/image'
 import { Badge, message } from 'antd'
+import { deleteStorage } from '@/utils/data'
 
 const AllUser: React.FC = () => {
     const [users, setUsers] = useState<RegisterUserType[]>([]);
@@ -23,9 +24,10 @@ const AllUser: React.FC = () => {
             setLoading(false);
         }
     }
-    const removeUsers = async (email: string) => {
+    const removeUsers = async (email: string, imgSrc: string) => {
         try {
             setLoading(true);
+            deleteStorage(imgSrc);
             const { data } = await axios.post(`/api/auth/alluser/remove`, { email });
             message.success(data.message);
             setUsers(data.allUsers);
@@ -87,7 +89,7 @@ const AllUser: React.FC = () => {
                                                 </div>
                                                 <div
                                                     className="cursor-pointer text-red-500 hover:bg-gray-200 p-2 rounded-full "
-                                                    onClick={() => removeUsers(item.email)}
+                                                    onClick={() => removeUsers(item.email, item.photo)}
                                                 >
                                                     <MdDelete />
                                                 </div>

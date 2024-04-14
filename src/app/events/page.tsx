@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import Layout from "@/Components/common/CommonLayout";
 import {
     Button,
-    Card,
     FileInput,
     Label,
     Modal,
@@ -22,12 +21,10 @@ import { useAppDispatch } from "@/redux/Store";
 import { updateEvents } from "@/redux/slices/AdminSlice";
 import { EventsItemsType } from "@/type";
 import { Url } from "url";
-import { ObjectId } from "mongoose";
 import EventCard from "@/Components/eventComp/EventCard";
 
 const Events = () => {
     const dispatch = useAppDispatch();
-
     const [openModal, setOpenModal] = useState(false);
     const [isUpdate, setIsUpdate] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -165,171 +162,136 @@ const Events = () => {
         getAllEvents();
     }, []);
 
+    if (loading) return <Loader />;
+    
     return (
         <Layout header={"events"}>
-            {loading ? (
-                <Loader />
-            ) : (
-                <>
-                    <div className="mb-4 mt-2 flex justify-between items-center">
-                        <div className="w-[20rem]">
-                            <TextInput
-                                value={searchVal}
-                                onChange={(e) => setSearchVal(e.target.value)}
-                                placeholder="Search by name"
-                                icon={FaMagnifyingGlass}
-                                className=" outline-none"
-                            />
-                        </div>
-                        <div
-                            className="button"
-                            color="light"
-                            onClick={() => setOpenModal(true)}
-                        >
-                            Add New
-                        </div>
-                    </div>
-                    <Modal
-                        show={openModal}
-                        size={"lg"}
-                        popup
-                        onClose={resetData}
+            <div className="mb-4 mt-2 flex justify-between items-center">
+                <div className="w-[20rem]">
+                    <TextInput
+                        value={searchVal}
+                        onChange={(e) => setSearchVal(e.target.value)}
+                        placeholder="Search by name"
+                        icon={FaMagnifyingGlass}
+                        className=" outline-none"
+                    />
+                </div>
+                <div
+                    className="button"
+                    color="light"
+                    onClick={() => setOpenModal(true)}
+                >
+                    Add New
+                </div>
+            </div>
+            <Modal
+                show={openModal}
+                size={"lg"}
+                popup
+                onClose={resetData}
+            >
+                <Modal.Header className="ps-6">Add New Event</Modal.Header>
+                <Modal.Body>
+                    <Formik
+                        initialValues={eventDetails}
+                        validationSchema={validate}
+                        onSubmit={(values) =>
+                            isUpdate ? updateEvent(values) : addEvents(values)
+                        }
                     >
-                        <Modal.Header className="ps-6">Add New Event</Modal.Header>
-                        <Modal.Body>
-                            <Formik
-                                initialValues={eventDetails}
-                                validationSchema={validate}
-                                onSubmit={(values) =>
-                                    isUpdate ? updateEvent(values) : addEvents(values)
-                                }
-                            >
-                                {({ handleChange }) => (
-                                    <Form>
-                                        <InputField
-                                            name="shortName"
-                                            placeholder="Event short name"
-                                            label={"Event short name"}
-                                        />
-                                        <InputField
-                                            name="fullName"
-                                            placeholder="Event Full name"
-                                            label={"Event Full name"}
-                                        />
-                                        <InputField
-                                            isInput={false}
-                                            name="description"
-                                            placeholder="Event description"
-                                            label={"Event description"}
-                                        />
-                                        <div className="mb-2">
-                                            <div className="mb-1 block">
-                                                <Label htmlFor="photo" value="Upload Event photo" />
-                                            </div>
-                                            <FileInput
-                                                onChange={(e) => uploadPhoto(e)}
-                                                accept=".jpg, .png, .jpeg"
-                                            />
+                        {({ handleChange }) => (
+                            <Form>
+                                <InputField
+                                    name="shortName"
+                                    placeholder="Event short name"
+                                    label={"Event short name"}
+                                />
+                                <InputField
+                                    name="fullName"
+                                    placeholder="Event Full name"
+                                    label={"Event Full name"}
+                                />
+                                <InputField
+                                    isInput={false}
+                                    name="description"
+                                    placeholder="Event description"
+                                    label={"Event description"}
+                                />
+                                <div className="mb-2">
+                                    <div className="mb-1 block">
+                                        <Label htmlFor="photo" value="Upload Event photo" />
+                                    </div>
+                                    <FileInput
+                                        onChange={(e) => uploadPhoto(e)}
+                                        accept=".jpg, .png, .jpeg"
+                                    />
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <div className="w-[45%]">
+                                        <div className="mb-1 block">
+                                            <Label htmlFor="date" value="Select date" />
                                         </div>
-                                        <div className="flex items-center justify-between">
-                                            <div className="w-[45%]">
-                                                <div className="mb-1 block">
-                                                    <Label htmlFor="date" value="Select date" />
-                                                </div>
-                                                <input
-                                                    type="date"
-                                                    name="date"
-                                                    onChange={handleChange}
-                                                    className="rounded-lg w-full"
-                                                />
-                                            </div>
-                                            <div className="w-[45%]">
-                                                <InputField
-                                                    name="type"
-                                                    placeholder="Event type"
-                                                    label={"Event type"}
-                                                />
-                                            </div>
-                                        </div>
-                                        <InputField
-                                            name="organizer"
-                                            placeholder="Event organizer"
-                                            label={"Event organizer"}
+                                        <input
+                                            type="date"
+                                            name="date"
+                                            onChange={handleChange}
+                                            className="rounded-lg w-full"
                                         />
-                                        <div className="flex gap-4 my-3">
-                                            {isUpdate ? (
-                                                <Button color={"info"} type="submit">
-                                                    Update Event
-                                                </Button>
-                                            ) : (
-                                                <>
-                                                    <Button color={"success"} type="submit">
-                                                        Add Event
-                                                    </Button>
-                                                    <Button color={"failure"} type="reset">
-                                                        Reset
-                                                    </Button>
-                                                </>
-                                            )}
-                                        </div>
-                                    </Form>
-                                )}
-                            </Formik>
-                        </Modal.Body>
-                    </Modal>
+                                    </div>
+                                    <div className="w-[45%]">
+                                        <InputField
+                                            name="type"
+                                            placeholder="Event type"
+                                            label={"Event type"}
+                                        />
+                                    </div>
+                                </div>
+                                <InputField
+                                    name="organizer"
+                                    placeholder="Event organizer"
+                                    label={"Event organizer"}
+                                />
+                                <div className="flex gap-4 my-3">
+                                    {isUpdate ? (
+                                        <Button color={"info"} type="submit">
+                                            Update Event
+                                        </Button>
+                                    ) : (
+                                        <>
+                                            <Button color={"success"} type="submit">
+                                                Add Event
+                                            </Button>
+                                            <Button color={"failure"} type="reset">
+                                                Reset
+                                            </Button>
+                                        </>
+                                    )}
+                                </div>
+                            </Form>
+                        )}
+                    </Formik>
+                </Modal.Body>
+            </Modal>
 
-                    {eventList && eventList.length > 0 ? (
-                        <div className="grid grid-cols-3 gap-8">
-                            {eventList
-                                .filter((ele) =>
-                                    ele.shortName.toLowerCase().includes(searchVal.toLowerCase())
-                                )
-                                .map((item, i) => {
-                                    return (
-                                        <EventCard
-                                            key={i}
-                                            props={item}
-                                            updateEvent={(e: EventsItemsType) => openUpdate(e)}
-                                            deleteEvent={(e: EventsItemsType) => deleteEvent(e)}
-                                        />
-                                        // <Card
-                                        //     key={i}
-                                        //     className="max-w-[20rem]"
-                                        //     imgAlt="event image"
-                                        //     imgSrc={photo}
-                                        // >
-                                        //     <h5 className="text-2xl font-semibold tracking-tight text-gray-900 uppercase">
-                                        //         {shortName}
-                                        //     </h5>
-                                        //     <p className="font-medium text-paragraph text-sm leading-4 tracking-wide ">
-                                        //         {description.slice(0, 100)}...
-                                        //     </p>
-                                        //     <div className="flex gap-x-4">
-                                        //         <Link href={`/events/${_id}`}>
-                                        //             {" "}
-                                        //             <Button color="info">View</Button>
-                                        //         </Link>
-                                        //         <Button
-                                        //             color="success"
-                                        //             onClick={() => openUpdate(item)}
-                                        //         >
-                                        //             Edit
-                                        //         </Button>
-                                        //         <Button
-                                        //             color="failure"
-                                        //             onClick={() => deleteEvent(item)}
-                                        //         >
-                                        //             Delete
-                                        //         </Button>
-                                        //     </div>
-                                        // </Card>
-                                    );
-                                })}
-                        </div>
-                    ) : (
-                        <h1 className="not_found">Sorry no data found</h1>
-                    )}
-                </>
+            {eventList && eventList.length > 0 ? (
+                <div className="grid grid-cols-3 gap-8">
+                    {eventList
+                        .filter((ele) =>
+                            ele.shortName.toLowerCase().includes(searchVal.toLowerCase())
+                        )
+                        .map((item, i) => {
+                            return (
+                                <EventCard
+                                    key={i}
+                                    props={item}
+                                    updateEvent={(e: EventsItemsType) => openUpdate(e)}
+                                    deleteEvent={(e: EventsItemsType) => deleteEvent(e)}
+                                />
+                            );
+                        })}
+                </div>
+            ) : (
+                <h1 className="not_found">Sorry no data found</h1>
             )}
         </Layout>
     );

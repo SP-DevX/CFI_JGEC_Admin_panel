@@ -12,6 +12,6 @@ export async function POST(req: NextRequest) {
         await Stock.create({ name, photo, modelNo, qty });
         return NextResponse.json({ message: "Component is added" }, { status: 201 });
     } catch (error) {
-        NextResponse.json({ message: "Internal Server Error" }, { status: 500 })
+        return NextResponse.json({ message: "Internal Server Error" }, { status: 500 })
     }
 }

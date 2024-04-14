@@ -4,10 +4,10 @@ import axios from 'axios'
 import { Table } from 'flowbite-react'
 import React, { useEffect, useState } from 'react'
 import { FaUserEdit } from 'react-icons/fa'
-import { MdDelete, MdPending } from 'react-icons/md'
+import { MdDelete } from 'react-icons/md'
 import Loader from './common/Loader'
 import Image from 'next/image'
-import { Badge, message } from 'antd'
+import { message } from 'antd'
 import { deleteStorage } from '@/utils/data'
 
 const AllUser: React.FC = () => {
@@ -20,6 +20,20 @@ const AllUser: React.FC = () => {
             setUsers(data.allUsers);
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false);
+        }
+    }
+    const makeAdmin = async (email: string, isAdmin: boolean) => {
+        try {
+            setLoading(true);
+            const { data } = await axios.patch(`/api/auth/alluser/make-admin`, { email, isAdmin });
+            // console.log(data);
+            message.success(data.message);
+            getUsers();
+        } catch (error: any) {
+            console.log(error);
+            message.error(error.message);
         } finally {
             setLoading(false);
         }
@@ -70,20 +84,20 @@ const AllUser: React.FC = () => {
                                         <Table.Cell>{item.email}</Table.Cell>
                                         <Table.Cell
                                             className={item.isVerify ? "text-green-500" : "text-red-500"}>
-                                            {item.isVerify ? `Verified` : `Not Verified`}
+                                            {item.isVerify ? `Verified` : `Unverified`}
                                         </Table.Cell>
                                         <Table.Cell
-                                            className={"text-green-500 font-semibold"}>
+                                            className={`text-sm font-medium ${item.isAdmin ? "text-green-500 " : " text-red-500"}`}>
                                             {item.isAdmin ? `admin` : `user`}
                                         </Table.Cell>
-                                        <Table.Cell className='text-sm font-semibold text-green-500'>
-                                            online
+                                        <Table.Cell className={`text-sm font-medium ${item.isOnline ? "text-green-500 " : " text-red-500"}`}>
+                                            {item.isOnline ? `Online` : `Offline`}
                                         </Table.Cell>
-                                        {/* <Table.Cell>{item.canRead ? `read & write` : `read only`}</Table.Cell> */}
                                         <Table.Cell>
                                             <div className="flex text-xl items-center">
                                                 <div
                                                     className=" cursor-pointer text-green-500 hover:bg-gray-200 p-2 rounded-full "
+                                                    onClick={() => makeAdmin(item.email, true)}
                                                 >
                                                     <FaUserEdit />
                                                 </div>

@@ -5,7 +5,6 @@ import ReduxProvider from "@/redux/ReduxProvider";
 import Sidebar from "@/Components/Sidebar";
 import { ToastContainer } from "react-toastify";
 import TopBar from "@/Components/TopBar";
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "CFI-Admin Panel",
@@ -19,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} w-full h-screen flex  bg-[rgb(241,245,249)]`}>
+      <body className={`w-full h-screen flex  bg-[rgb(241,245,249)]`}>
         <ReduxProvider>
           <div className="w-[20%] max-w-sm h-full">
             <Sidebar />

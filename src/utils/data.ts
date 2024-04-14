@@ -1,15 +1,15 @@
-import * as firebase from "firebase/app";
-import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+
+import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "@/firebase";
 import { v4 } from "uuid";
 import { message } from "antd";
 
 
-export const positions: string[] = ['---Select---', 'Secretory', 'Web Lead', 'Technical Head']
-export const years: (string | number)[] = ['---Select---', 2020, 2021, 2022, 2023, 2024]
+export const positions: string[] = ['---Select---', 'Secretary', "Cashier", 'Head of Business Development', 'Project Management Head', "Web Lead", "Social Media Team", "Technical Team"]
+export const years: (string | number)[] = ['---Select---', 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
 export const departments: string[] = ['---Select---', 'CSE', 'IT', 'ECE', 'EE', 'ME', 'CE']
 export const socialIcons: string[] = ['---Select---', 'facebook', 'instagram', 'linkedin', 'twitter']
-export const eventCategories: string[] = ['---Select---', 'ICICI-2023', "SRISTI"]
+export const eventCategories: string[] = ['---Select---', 'ICIC-2023', "ICIC-2024", "ICICIC-2025"]
 export const Status: string[] = ["---Select---", "resolved", "pending"]
 
 export const fileToUrlLink = async (file: File, fileType: string) => {

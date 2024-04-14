@@ -5,8 +5,7 @@ import { NextRequest, NextResponse } from "next/server"
 connectDB();
 export async function POST(req: NextRequest) {
     try {
-        const reqBody = await req.json();
-        console.log(reqBody);
+        const reqBody = await req.json(); 
         const { _id } = reqBody;
         await Event.findByIdAndDelete(_id)
         return NextResponse.json({ message: "Event is deleted" }, { status: 201 });

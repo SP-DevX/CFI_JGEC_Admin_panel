@@ -3,6 +3,8 @@ import { Button } from 'flowbite-react';
 import Image from 'next/image'
 import Link from 'next/link';
 import React from 'react'
+import { FaEdit } from 'react-icons/fa';
+import { MdDelete } from 'react-icons/md';
 
 interface PropsType {
     props: EventsItemsType,
@@ -14,18 +16,27 @@ interface PropsType {
 const EventCard: React.FC<PropsType> = ({ props, deleteEvent, updateEvent }) => {
     const { _id, photo, shortName, description } = props;
     return (
-        <div key={shortName} className='w-full h-[24rem] bg-white shadow-lg border rounded-lg overflow-hidden'>
+        <div key={shortName} className='w-full max-h-[24rem] bg-white shadow-md shadow-indigo-100 rounded-lg  p-4'>
             {/* @ts-ignore */}
-            <Image src={photo} alt='card img' width={200} height={400} className='w-full h-[12rem] object-cover' />
-            <div className='px-6 py-4 flex flex-col justify-center items-center'>
-                <h1 className='font-semibold text-title text-xl uppercase'>{shortName}</h1>
-                <p className='text-sm text-center py-3 text-paragraph '>{description.slice(0, 100)}...</p>
-                <div className='flex space-x-3'>
+            <Image src={photo} alt='card img' width={200} height={400} className='w-full max-h-56 object-cover rounded-md' />
+            <div className='pt-3'>
+                <h1 className='font-medium text-lg uppercase pb-3'>{shortName}</h1>
+                <div className='flex items-center'>
                     <Link href={`/events/${_id}`}>
-                        <Button color='info'>View</Button>
+                        <button className='text-blue-500 me-3 w-20'>View</button>
                     </Link>
-                    <Button color='success' onClick={() => updateEvent(props)}>Edit</Button>
-                    <Button color='failure' onClick={() => deleteEvent(props)}>Delete</Button>
+                    <div
+                        className=" cursor-pointer text-green-500 hover:bg-gray-200 p-2 rounded-full "
+                        onClick={() => updateEvent(props)}
+                    >
+                        <FaEdit size={18} />
+                    </div>
+                    <div
+                        className="cursor-pointer text-red-500 hover:bg-gray-200 p-2 rounded-full "
+                        onClick={() => deleteEvent(props)}
+                    >
+                        <MdDelete size={18} />
+                    </div>
                 </div>
             </div>
         </div>

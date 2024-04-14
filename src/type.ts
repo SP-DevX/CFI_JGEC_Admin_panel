@@ -77,6 +77,5 @@ export interface RegisterUserType {
     forgotPasswordTokenExpiry: Date,
     verifyToken: string;
     verifyTokenExpiry: Date,
-    canRead: boolean;
-    canWrite: boolean;
+    isOnline: boolean,
 }

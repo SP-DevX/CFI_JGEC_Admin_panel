@@ -8,6 +8,6 @@ export async function GET(req: NextRequest) {
         const components = await Stock.find({}); 
         return NextResponse.json({ components }, { status: 200 });
     } catch (error) {
-        NextResponse.json({ message: "Internal Server Error" }, { status: 500 })
+        return NextResponse.json({ message: "Internal Server Error" }, { status: 500 })
     }
 }

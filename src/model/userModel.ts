@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     email: {
-        type: String,
+        type: String, 
         required: true
     },
     password: {
@@ -29,14 +29,10 @@ const userSchema = new mongoose.Schema({
     forgotPasswordTokenExpiry: Date,
     verifyToken: String,
     verifyTokenExpiry: Date,
-    canRead: {
+    isOnline: {
         type: Boolean,
-        default: true,
-    },
-    canWrite: {
-        type: Boolean,
-        default: true,
-    },
+        default: false,
+    }
 })
 
 const User = mongoose.models.User || mongoose.model('User', userSchema);

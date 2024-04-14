@@ -15,9 +15,11 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: "User is not exist" }, { status: 404 });
         const isValidPassword = await bcrypt.compare(password, user.password);
         if (!isValidPassword)
-            return NextResponse.json({ message: "unauthorized user" }, { status: 401 });
+            return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
+        user.isOnline = true;
+        await user.save();
         // create token
-        if (!user.isVerify) return NextResponse.json({ message: "unverified user" }, { status: 310 });
+        if (!user.isVerify) return NextResponse.json({ message: "User is not verified" }, { status: 310 });
         const token = await jwt.sign({ id: user._id }, process.env.JWT_SECRETKEY!, {
             expiresIn: "1d",
         });

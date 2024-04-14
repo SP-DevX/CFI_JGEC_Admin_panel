@@ -10,6 +10,6 @@ export async function POST(req: NextRequest) {
         await Project.findByIdAndDelete(isExisting._id); 
         return NextResponse.json({ message: "Project is removed" }, { status: 200 });
     } catch (error) {
-        NextResponse.json({ message: "Internal Server Error" }, { status: 500 })
+        return NextResponse.json({ message: "Internal Server Error" }, { status: 500 })
     }
 }

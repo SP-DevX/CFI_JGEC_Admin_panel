@@ -12,6 +12,6 @@ export async function POST(req: NextRequest) {
         await Project.create({ projectId, title, overview, name, year, demo, details, code, photo });
         return NextResponse.json({ message: "Project is created" }, { status: 201 });
     } catch (error) {
-        NextResponse.json({ message: "Internal Server Error" }, { status: 500 })
+        return NextResponse.json({ message: "Internal Server Error" }, { status: 500 })
     }
 }

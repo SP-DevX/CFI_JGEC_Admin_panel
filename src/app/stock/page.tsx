@@ -17,7 +17,13 @@ import { ComponentsType, resComponentsType } from "@/type";
 import axios from "axios";
 import Loader from "@/Components/common/Loader";
 
+interface cerType {
+    url: String;
+    refId: String
+}
+
 const Stock = () => {
+    const [certificateList, setCertificateList] = useState<cerType[]>()
     const [searchVal, setSearchVal] = useState("");
     const [openModal, setOpenModal] = useState(false);
     const [photo, setPhoto] = useState("");
@@ -128,6 +134,8 @@ const Stock = () => {
         qty: Yup.number().required("qty is required"),
     });
 
+    if (loading) return <Loader />;
+
     return (
         <>
             <Modal show={openModal} size={"md"} onClose={() => setOpenModal(false)}>
@@ -184,77 +192,73 @@ const Stock = () => {
                     </Formik>
                 </Modal.Body>
             </Modal>
-            {loading ? (
-                <Loader />
-            ) : (
-                <section className="mb-20">
-                    <Layout header="stock">
-                        <div className="flex justify-between items-center mb-4">
-                            <TextInput
-                                value={searchVal}
-                                onChange={(e) => setSearchVal(e.target.value)}
-                                placeholder="Search by component name..."
-                                icon={FaMagnifyingGlass}
-                                className=" w-2/5 outline-none focus:ring-transparent focus:border-none"
-                            />
-                            <button
-                                className="button w-48 ms-auto"
-                                onClick={() => setOpenModal(true)}
-                            >
-                                Add Components
-                            </button>
-                        </div>
-                        <div className="w-full h-full grid grid-cols-4 gap-8">
-                            {resCompList
-                                ?.filter((ele) =>
-                                    ele.name.toLowerCase().includes(searchVal.toLowerCase())
-                                )
-                                .map((item, i) => (
-                                    <div
-                                        className="w-full h-[17rem] rounded-lg border shadow-lg bg-white"
-                                        key={i}
-                                    >
-                                        <Image
-                                            src={item.photo ? item.photo : Arduino}
-                                            className="w-full h-32 object-contain mix-blend-multiply"
-                                            alt="stock"
-                                            width={100}
-                                            height={100}
-                                            priority
-                                        />
-                                        <div className="w-full py-2 px-6 text-sm font-medium text-gray-800">
-                                            <h1 className="text-base font-semibold capitalize">
-                                                {item.name}
-                                            </h1>
-                                            <p>
-                                                Model No:
-                                                <span className="text-gray-600 ms-2">
-                                                    {item.modelNo}
-                                                </span>
-                                            </p>
-                                            <p>
-                                                Qty-
-                                                <span className="text-gray-600 ms-2">{item.qty}</span>
-                                            </p>
-                                        </div>
-                                        <div className="mt-auto flex items-center justify-center space-x-4">
-                                            <FaRegEdit
-                                                size={20}
-                                                className="text-green-500 cursor-pointer"
-                                                onClick={() => openUpdate(item)}
-                                            />
-                                            <MdDelete
-                                                size={25}
-                                                className="text-red-500 cursor-pointer"
-                                                onClick={() => deleteComp(item)}
-                                            />
-                                        </div>
+            <section className="mb-20">
+                <Layout header="stock">
+                    <div className="flex justify-between items-center mb-4">
+                        <TextInput
+                            value={searchVal}
+                            onChange={(e) => setSearchVal(e.target.value)}
+                            placeholder="Search by component name..."
+                            icon={FaMagnifyingGlass}
+                            className=" w-2/5 outline-none focus:ring-transparent focus:border-none"
+                        />
+                        <button
+                            className="button w-48 ms-auto"
+                            onClick={() => setOpenModal(true)}
+                        >
+                            Add Components
+                        </button>
+                    </div>
+                    <div className="w-full h-full grid grid-cols-4 gap-8">
+                        {resCompList
+                            ?.filter((ele) =>
+                                ele.name.toLowerCase().includes(searchVal.toLowerCase())
+                            )
+                            .map((item, i) => (
+                                <div
+                                    className="w-full h-[15rem] rounded-lg border shadow-lg bg-white"
+                                    key={i}
+                                >
+                                    <Image
+                                        src={item.photo ? item.photo : Arduino}
+                                        className="w-full h-32 object-contain mix-blend-multiply p-3"
+                                        alt="stock"
+                                        width={100}
+                                        height={100}
+                                        priority
+                                    />
+                                    <div className="w-full py-2 px-3 text-sm font-medium text-gray-800">
+                                        <h1 className="text-base font-semibold capitalize">
+                                            {item.name}
+                                        </h1>
+                                        <p>
+                                            Model No:
+                                            <span className="text-gray-600 text-xs ms-2">
+                                                {item.modelNo}
+                                            </span>
+                                        </p>
+                                        <p>
+                                            Qty-
+                                            <span className="text-gray-600 text-sm ms-2">{item.qty}</span>
+                                        </p>
                                     </div>
-                                ))}
-                        </div>
-                    </Layout>
-                </section>
-            )}
+                                    <div className="mt-auto flex items-center justify-center space-x-4">
+                                        <FaRegEdit
+                                            size={18}
+                                            className="text-green-500 cursor-pointer"
+                                            onClick={() => openUpdate(item)}
+                                        />
+                                        <MdDelete
+                                            size={20}
+                                            className="text-red-500 cursor-pointer"
+                                            onClick={() => deleteComp(item)}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                    </div>
+                </Layout>
+            </section>
         </>
     );
 };

@@ -3,7 +3,6 @@ import { GrAnnounce } from "react-icons/gr";
 import { PiUsersThreeFill } from "react-icons/pi";
 import { FaGear } from "react-icons/fa6";
 import { HiOutlineTrophy } from "react-icons/hi2";
-import { PiMicrosoftTeamsLogoDuotone } from "react-icons/pi";
 import { GrCertificate } from "react-icons/gr";
 import { IoNotificationsCircleOutline } from "react-icons/io5";
 
@@ -55,4 +54,4 @@ export const ListItems: ListItemsType[] = [
         link: "/alert",
         icon: <IoNotificationsCircleOutline size={20} />,
     },
-];
+]; 

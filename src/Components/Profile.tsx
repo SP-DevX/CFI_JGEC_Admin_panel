@@ -1,7 +1,8 @@
+"use client"
 import { useAppDispatch, useAppSelector } from '@/redux/Store'
 import { LogOutUser } from '@/redux/slices/User'
 import { props } from '@/type'
-import { message } from 'antd'
+import { toast } from 'react-hot-toast'
 import axios from 'axios'
 import { Modal } from 'flowbite-react'
 import Image from 'next/image'
@@ -21,11 +22,11 @@ const Profile: React.FC<props> = ({ openModal, closeModal }) => {
             await axios.patch('/api/auth/logout', { email });
             dispatch(LogOutUser());
             closeModal(false);
-            message.success(`User logged out successfully`)
+            toast.success(`User logged out successfully`)
             router.push('/login');
         } catch (error: any) {
             console.log(error);
-            message.error(error.message);
+            toast.error(error.message);
         } finally {
             setLoading(false);
         }

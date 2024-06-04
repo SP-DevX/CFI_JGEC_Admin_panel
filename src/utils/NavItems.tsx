@@ -6,7 +6,6 @@ import { HiOutlineTrophy } from "react-icons/hi2";
 import { GrCertificate } from "react-icons/gr";
 import { IoNotificationsCircleOutline } from "react-icons/io5";
 
-
 interface ListItemsType {
     name: string,
     link: string,

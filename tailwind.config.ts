@@ -18,12 +18,16 @@ const config: Config = {
         title: "#000000",
         subtitle: "#0d1216",
         paragraph: "#0000006b",
+        pink_1: "#EE119C",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      screens: {
+        xs:"475px"
+      }
     },
   },
   plugins: [

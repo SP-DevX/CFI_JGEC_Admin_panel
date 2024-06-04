@@ -7,6 +7,7 @@ connectDB();
 export async function POST(req: NextRequest) {
     try {
         const { category } = await req.json();
+        console.log(category);
         const folder = await Certificate.findOne({ category });
         console.log(folder);
         if (folder) return NextResponse.json({ message: "Folder already exists" }, { status: 409 });

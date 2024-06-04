@@ -16,9 +16,15 @@ body {
   font-family: "Poppins", sans-serif;
 }
 
-@layer components {
+@layer base {
+  .header {
+    @apply text-xl xs:text-2xl sm:text-3xl font-semibold text-gray-900 mb-2.5 sm:mb-4;
+  }
+  .subheader {
+    @apply max-xs:text-sm text-gray-600 mb-4 xs:mb-6;
+  }
   .button {
-    @apply w-32 text-center py-2.5 rounded-lg font-medium cursor-pointer ms-auto bg-btnBg text-white;
+    @apply w-32 text-center py-2.5 rounded-lg font-medium cursor-pointer  bg-btnBg text-white;
   }
   .not_found {
     @apply text-center text-4xl font-semibold text-gray-600 my-20;

@@ -12,16 +12,11 @@ export async function POST(req: NextRequest) {
                 event.categoryList.push(uploadList[i]);
             }
             await event.save();
-        }
-        else {
-            const newCertificate = await Certificate.create({
-                category,
-                categoryList: uploadList,
-            })
-        }
+        } 
         const list = await Certificate.findOne({ category });
         return NextResponse.json({ list, message: "Certificates uploaded" }, { status: 200 });
     } catch (error) {
+        console.log(error);
         return NextResponse.json({ message: "Internal error" }, { status: 500 });
     }
 }

@@ -7,7 +7,7 @@ import { FaUserEdit } from 'react-icons/fa'
 import { MdDelete } from 'react-icons/md'
 import Loader from './common/Loader'
 import Image from 'next/image'
-import { message } from 'antd'
+import { toast } from 'react-hot-toast'
 import { deleteStorage } from '@/utils/data'
 
 const AllUser: React.FC = () => {
@@ -29,11 +29,11 @@ const AllUser: React.FC = () => {
             setLoading(true);
             const { data } = await axios.patch(`/api/auth/alluser/make-admin`, { email, isAdmin });
             // console.log(data);
-            message.success(data.message);
+            toast.success(data.message);
             getUsers();
         } catch (error: any) {
             console.log(error);
-            message.error(error.message);
+            toast.error(error.message);
         } finally {
             setLoading(false);
         }
@@ -43,7 +43,7 @@ const AllUser: React.FC = () => {
             setLoading(true);
             deleteStorage(imgSrc);
             const { data } = await axios.post(`/api/auth/alluser/remove`, { email });
-            message.success(data.message);
+            toast.success(data.message);
             setUsers(data.allUsers);
         } catch (error) {
             console.log(error);

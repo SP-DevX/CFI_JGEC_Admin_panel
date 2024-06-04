@@ -2,7 +2,7 @@
 import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "@/firebase";
 import { v4 } from "uuid";
-import { message } from "antd";
+import { toast } from "react-hot-toast";
 
 
 export const positions: string[] = ['---Select---', 'Secretary', "Cashier", 'Head of Business Development', 'Project Management Head', "Web Lead", "Social Media Team", "Technical Team"]
@@ -26,9 +26,9 @@ export const deleteStorage = async (fileUrl: string) => {
     try {
         const fileRef = ref(storage, fileUrl);
         await deleteObject(fileRef);
-        message.success('File removed from storage');
+        toast.success('File removed from storage');
     } catch (error) {
         console.error('Error deleting file:', error);
-        message.error('File not removed from storage');
+        toast.error('File not removed from storage');
     }
 }

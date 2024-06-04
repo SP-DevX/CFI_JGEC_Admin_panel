@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
             email,
             password: passwordHash
         });   
+        console.log(user);
         await mailer({ email, emailType: "VERIFY", userId: user._id });
         return NextResponse.json({ message: "Now Verify your email" }, { status: 201 });
     } catch (error) {

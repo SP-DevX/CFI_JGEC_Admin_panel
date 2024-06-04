@@ -6,12 +6,7 @@ export type props = {
     openModal: boolean,
     closeModal: CallableFunction
 }
-export interface UserType {
-    photo?: string,
-    name?: string,
-    email: string,
-    password: string
-}
+ 
 export interface NoticeType {
     title: string,
     description: string,

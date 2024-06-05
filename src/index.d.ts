@@ -36,3 +36,31 @@ declare interface solveResType {
     question: string,
     solution: string,
 }
+
+declare interface membersType {
+    name: string,
+    photo?: string,
+    position: string[],
+    year: string | string[],
+    dept: string,
+    email: string,
+    phone: string | number,
+    facebook?: string | URL,
+    instagram?: string | URL,
+    linkedin?: string | URL,
+}
+declare interface resMembersType extends membersType {
+    _id: string | ObjectId,
+    socialLinks: {
+        facebook?: string | URL,
+        instagram?: string | URL,
+        linkedin?: string | URL,
+    }
+}
+
+declare interface galleryType{
+    _id: string
+    title: string,
+    date: string,
+    photo: string
+}

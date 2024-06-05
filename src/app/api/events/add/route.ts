@@ -13,6 +13,7 @@ export async function POST(req: NextRequest) {
         await Event.create({ shortName, fullName, description, date, type, organizer, photo });
         return NextResponse.json({ message: "Event is added" }, { status: 201 });
     } catch (error) {
+        console.log(error)
         return NextResponse.json({ message: "Internal error" }, { status: 500 });
     }
 } 

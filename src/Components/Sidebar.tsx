@@ -15,7 +15,7 @@ const Sidebar = () => {
         <Image src={Logo} alt="cfi logo" width={48} height={48} className="w-12 h-12 object-contain" />
         <h1 className="text-2xl font-semibold ms-3">CFI Admin Panel</h1>
       </div>
-      <ul className="my-20 px-4">
+      <ul className="my-12 px-4">
         {ListItems.map((item, i) => (
           <Link
             href={item.link}

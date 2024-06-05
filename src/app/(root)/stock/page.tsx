@@ -4,18 +4,19 @@ import Layout from "@/Components/common/CommonLayout";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import Arduino from "@/assets/arduino.jpeg";
-import { FileInput, Label, Modal, TextInput } from "flowbite-react";
+import { Button, FileInput, Label, Modal, TextInput } from "flowbite-react";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { FaRegEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import InputField from "@/Components/common/InputField";
-import { fileToUrlLink } from "@/utils/data";
+import { deleteStorage, fileToUrlLink } from "@/utils/data";
 import { toast } from "react-hot-toast";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { ComponentsType, resComponentsType } from "@/type";
 import axios from "axios";
 import Loader from "@/Components/common/Loader";
+import ImageCropUpload from "@/Components/common/CroppedImage";
 
 interface cerType {
     url: String;
@@ -23,7 +24,6 @@ interface cerType {
 }
 
 const Stock = () => {
-    const [certificateList, setCertificateList] = useState<cerType[]>()
     const [searchVal, setSearchVal] = useState("");
     const [openModal, setOpenModal] = useState(false);
     const [photo, setPhoto] = useState("");
@@ -37,15 +37,8 @@ const Stock = () => {
         qty: null,
     });
 
-    const uploadPhoto = async (e: any) => {
-        const imgFile = e.target.files[0];
-        if (imgFile) {
-            const imgUrl = await fileToUrlLink(imgFile, `Components/`);
-            if (imgUrl) {
-                setPhoto(imgUrl);
-                toast.success("photo Upload");
-            } else toast.error("photo is not uploaded");
-        } else toast.error("Photo is not uploaded");
+    const downloadUrl = async (imgUrl: string) => {
+        setPhoto(imgUrl);
     };
 
     // update values
@@ -84,6 +77,7 @@ const Stock = () => {
             setLoading(true);
             const { data } = await axios.post(`/api/stock/remove`, values);
             toast.success(data.message);
+            if (values.photo) await deleteStorage(String(values.photo))
             getAllComp();
             resetAllData();
         } catch (error) {
@@ -138,7 +132,7 @@ const Stock = () => {
 
     return (
         <>
-            <Modal show={openModal} size={"md"} onClose={() => setOpenModal(false)}>
+            <Modal show={openModal} size={"md"} onClose={resetAllData}>
                 <Modal.Header>
                     {
                         isUpdate ? "Update Component details" : "Add new Component details"
@@ -156,15 +150,16 @@ const Stock = () => {
                     >
                         {(formik) => (
                             <Form>
-                                <div id="fileUpload" className="w-full">
-                                    <div className="mb-2 block">
-                                        <Label htmlFor="file" value="Model photo" />
+                                <div className="flex items-center gap-x-4">
+                                    <div className="w-16 h-16 bg-gray-200 min-w-16 rounded-md">
+                                        {photo && <Image src={photo} alt="component" width={50} height={50} className="w-full h-full aspect-square" />}
                                     </div>
-                                    <FileInput
-                                        id="file"
-                                        accept=".jpg, .jpeg, .png"
-                                        onChange={uploadPhoto}
-                                    />
+                                    <div className="w-full">
+                                        <div className=" block">
+                                            <Label htmlFor="file" value="Model photo" />
+                                        </div>
+                                        <ImageCropUpload aspect={1 / 1} onUploadComplete={downloadUrl} fileType="Components" />
+                                    </div>
                                 </div>
                                 <InputField
                                     name="name"
@@ -183,14 +178,14 @@ const Stock = () => {
                                     label="Quantity"
                                     placeholder="Enter quantity"
                                 />
-                                <div className="space-x-4 mt-4">
-                                    <button
+                                <div className="flex items-center gap-x-4 mt-4">
+                                    <Button
                                         type="submit"
                                         className={`button ${photo === "" && "opacity-50 cursor-not-allowed"}`}
                                         disabled={photo === ""}
                                     >
-                                        {isUpdate ? "Update" : "Add"}
-                                    </button>
+                                        {isUpdate ? "Update" : "Add Comp."}
+                                    </Button>
                                     <button type="reset" className="button bg-red-500">
                                         Reset{" "}
                                     </button>
@@ -279,8 +274,6 @@ const Stock = () => {
 };
 
 export default Stock;
-
-// const StockCard = () => {
 //     return (
 //         <div className="w-full h-[16rem] rounded-lg border shadow-lg bg-white">
 //             <Image

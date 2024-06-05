@@ -26,29 +26,10 @@ export interface EventsItemsType {
     type: string,
     organizer: string,
     _id?: string | ObjectId,
-    photo?: string | Url
+    photo?: string 
 }
 
-export interface membersType {
-    name: string,
-    photo?: string,
-    position: string,
-    year: string | string[],
-    dept: string,
-    email: string,
-    phone: string | number,
-    facebook?: string | URL,
-    instagram?: string | URL,
-    linkedin?: string | URL,
-}
-export interface resMembersType extends membersType {
-    _id: string | ObjectId,
-    socialLinks: {
-        facebook?: string | URL,
-        instagram?: string | URL,
-        linkedin?: string | URL,
-    }
-}
+
 
 export interface ComponentsType {
     photo?: string | StaticImageData,

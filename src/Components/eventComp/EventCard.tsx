@@ -16,12 +16,12 @@ interface PropsType {
 const EventCard: React.FC<PropsType> = ({ props, deleteEvent, updateEvent }) => {
     const { _id, photo, shortName, description } = props;
     return (
-        <div key={shortName} className='w-full max-h-[24rem] bg-white shadow-md shadow-indigo-100 rounded-lg  p-4'>
+        <div key={shortName} className='w-full  min-h-60 bg-white shadow-md shadow-indigo-100 rounded-lg  p-4'>
             {/* @ts-ignore */}
-            <Image src={photo} alt='card img' width={200} height={400} className='w-full max-h-56 object-cover rounded-md' />
+            <Image src={photo} alt='card img' width={200} height={400} className='w-full h-auto   object-contain rounded-md' />
             <div className='pt-3'>
-                <h1 className='font-medium text-lg uppercase pb-3'>{shortName}</h1>
-                <div className='flex items-center'>
+                <h1 className='font-medium text-lg text-center uppercase pb-3'>{shortName}</h1>
+                <div className='flex items-center justify-center'>
                     <Link href={`/events/${_id}`}>
                         <button className='text-blue-500 me-3 w-20'>View</button>
                     </Link>

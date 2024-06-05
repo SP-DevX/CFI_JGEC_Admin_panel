@@ -73,8 +73,8 @@ const ImageCropUpload: React.FC<props> = ({
     };
     if (loading) return <Loader />
     return (
-        <div className="">
-            <FileInput ref={fileRef} accept="image/*" onChange={handleFileChange} />
+        <div className="mt-1">
+            <FileInput ref={fileRef} accept="image/*" onChange={handleFileChange} className="w-full" />
             {imageSrc && (
                 <div className="w-full h-screen fixed top-0 left-0 bg-black/30  flex items-center justify-center z-[999]">
                     <div className="w-full max-w-xl h-[400px] bg-white z-[9999]">

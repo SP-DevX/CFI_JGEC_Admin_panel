@@ -1,6 +1,7 @@
 "use client";
 
-import { 
+import {
+    Button,
     FileInput,
     Label,
     Modal,
@@ -14,9 +15,9 @@ import axios from "axios";
 import { fileToUrlLink } from "@/utils/data";
 import { NoticeType } from "@/type";
 import Layout from "@/Components/common/CommonLayout";
-import { FaEdit } from "react-icons/fa"; 
+import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
-import Loader from "@/app/loading";
+import Loader from "@/Components/common/Loader";
 
 function Notice() {
     const [openModal, setOpenModal] = useState(false);
@@ -156,7 +157,7 @@ function Notice() {
                         <Modal.Header className="border-b">
                             <p className="ms-4 pt-2 ">Add New Notice</p>
                         </Modal.Header>
-                        <Modal.Body className="py-2">
+                        <Modal.Body className="py-3 pb-6">
                             <form onSubmit={!isUpdate ? submitDetails : updateNoticeDetails}>
                                 <div className="max-w-md mb-2">
                                     <div className="mb-1 block">
@@ -217,22 +218,22 @@ function Notice() {
                                         className="w-full rounded-md bg-gray-50 border-gray-300"
                                     />
                                 </div>
-                                <div className="mt-4">
+                                <div className="mt-4 flex items-center">
                                     {!isUpdate ? (
-                                        <button className="button bg-green-500 me-6" type="submit">
+                                        <Button disabled={newNoticeDetails.link === ""} className="button bg-green-500 me-6" type="submit">
                                             Add Notice
-                                        </button>
+                                        </Button>
                                     ) : (
-                                        <button className="button bg-blue-500" type="submit">
+                                        <Button disabled={newNoticeDetails.link === ""} className="button bg-blue-500  me-6" type="submit">
                                             Update
-                                        </button>
+                                        </Button>
                                     )}
-                                    <button className="button bg-red-500"  type="reset">
+                                    <button className="button bg-red-500" type="reset">
                                         Remove
                                     </button>
                                 </div>
                             </form>
-                        </Modal.Body> 
+                        </Modal.Body>
                     </Modal>
 
                     <div className="w-full px-6 py-8 z-10">

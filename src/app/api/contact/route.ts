@@ -7,6 +7,8 @@ connectDB();
 
 export async function POST(req: NextRequest) {
     try {
+        console.log("enter request");
+        
         const { name, email, message, mobile } = await req.json();
         console.log(name, email, message, mobile);
         const newHelp = await Help.create(name, email, message, mobile);

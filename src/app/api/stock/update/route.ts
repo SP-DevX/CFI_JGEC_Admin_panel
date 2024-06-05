@@ -14,8 +14,9 @@ export async function POST(req: NextRequest) {
             { photo, modelNo, qty },
             { new: true }
         );
-        return NextResponse.json({ message: "Component is added" }, { status: 201 });
+        return NextResponse.json({ message: "Component is updated" }, { status: 201 });
     } catch (error) {
+        console.log(error);
         return NextResponse.json({ message: "Internal Server Error" }, { status: 500 })
     }
 }

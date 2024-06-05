@@ -14,7 +14,7 @@ import { Form, Formik } from "formik";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import Link from "next/link";
 import axios from "axios";
-import { fileToUrlLink } from "@/utils/data";
+import { deleteStorage, fileToUrlLink } from "@/utils/data";
 import Loader from "@/Components/common/Loader";
 import * as Yup from "yup";
 import { useAppDispatch } from "@/redux/Store";
@@ -23,6 +23,7 @@ import { EventsItemsType } from "@/type";
 import { Url } from "url";
 import EventCard from "@/Components/eventComp/EventCard";
 import toast from "react-hot-toast";
+import ImageCropUpload from "@/Components/common/CroppedImage";
 
 const Events = () => {
     const dispatch = useAppDispatch();
@@ -30,7 +31,7 @@ const Events = () => {
     const [isUpdate, setIsUpdate] = useState(false);
     const [loading, setLoading] = useState(false);
     const [searchVal, setSearchVal] = useState("");
-    const [photo, setPhotoUrl] = useState<string | Url>("");
+    const [photo, setPhotoUrl] = useState<string>("");
     const [eventDetails, setEventDetails] = useState<EventsItemsType>({
         shortName: "",
         fullName: "",
@@ -54,18 +55,22 @@ const Events = () => {
         organizer: Yup.string().required("organizer is required"),
     });
 
-    // upload the photo into firebase storage
-    const uploadPhoto = async (e: any) => {
-        const imgFile = e.target.files[0];
-        if (imgFile) {
-            const imgUrl = await fileToUrlLink(imgFile, `Event/`);
-            if (imgUrl) {
-                setPhotoUrl(imgUrl);
-                toast.success("photo Upload");
-            }
-            else toast.error("photo not Upload");
-        }
-    };
+    const getPhotoUrl = (url: string) => {
+        setPhotoUrl(url);
+    }
+
+    // // upload the photo into firebase storage
+    // const uploadPhoto = async (e: any) => {
+    //     const imgFile = e.target.files[0];
+    //     if (imgFile) {
+    //         const imgUrl = await fileToUrlLink(imgFile, `Event/`);
+    //         if (imgUrl) {
+    //             setPhotoUrl(imgUrl);
+    //             toast.success("photo Upload");
+    //         }
+    //         else toast.error("photo not Upload");
+    //     }
+    // };
 
     // reset values
     const resetData = () => {
@@ -94,7 +99,7 @@ const Events = () => {
             type,
             organizer,
         });
-        if (photo) setPhotoUrl(photo);
+        if (photo) setPhotoUrl(String(photo));
         setOpenModal(true);
     };
 
@@ -124,8 +129,10 @@ const Events = () => {
             const { data } = await axios.post("/api/events/add", values);
             getAllEvents();
             resetData();
-        } catch (error) {
+            toast.success(data.message)
+        } catch (error: any) {
             console.log(error);
+            toast.error(error.message)
         } finally {
             setLoading(false);
         }
@@ -136,11 +143,13 @@ const Events = () => {
         try {
             setLoading(true);
             values.photo = photo;
-            await axios.post("/api/events/update", values);
+           const {data}= await axios.post("/api/events/update", values);
             getAllEvents();
             resetData();
-        } catch (error) {
+            toast.success(data.message)
+        } catch (error: any) {
             console.log(error);
+            toast.error(error.message)
         } finally {
             setLoading(false);
         }
@@ -151,9 +160,12 @@ const Events = () => {
         try {
             setLoading(true);
             await axios.post(`/api/events/remove`, item);
+            if(item.photo)await deleteStorage(item.photo);
             getAllEvents();
-        } catch (error) {
+            toast.success("event deleted successfully")
+        } catch (error: any) {
             console.log(error);
+            toast.error(error.message)
         } finally {
             setLoading(false);
         }
@@ -164,7 +176,7 @@ const Events = () => {
     }, []);
 
     if (loading) return <Loader />;
-    
+
     return (
         <Layout header={"events"}>
             <div className="mb-4 mt-2 flex justify-between items-center">
@@ -222,10 +234,7 @@ const Events = () => {
                                     <div className="mb-1 block">
                                         <Label htmlFor="photo" value="Upload Event photo" />
                                     </div>
-                                    <FileInput
-                                        onChange={(e) => uploadPhoto(e)}
-                                        accept=".jpg, .png, .jpeg"
-                                    />
+                                    <ImageCropUpload onUploadComplete={getPhotoUrl} aspect={16 / 9} fileType="Event/" /> 
                                 </div>
                                 <div className="flex items-center justify-between">
                                     <div className="w-[45%]">
@@ -254,12 +263,12 @@ const Events = () => {
                                 />
                                 <div className="flex gap-4 my-3">
                                     {isUpdate ? (
-                                        <Button color={"info"} type="submit">
+                                        <Button disabled={photo === ""} color={"info"} type="submit">
                                             Update Event
                                         </Button>
                                     ) : (
                                         <>
-                                            <Button color={"success"} type="submit">
+                                            <Button disabled={photo === ""} color={"success"} type="submit">
                                                 Add Event
                                             </Button>
                                             <Button color={"failure"} type="reset">

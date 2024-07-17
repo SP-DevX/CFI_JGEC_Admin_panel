@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface userSlice {
     user: null | any,
-    tempUserDetails: null | registerUserType
+    tempUserDetails: any
 }
 
 const initialState: userSlice = {
@@ -18,7 +18,7 @@ export const UserSlice = createSlice({
         LoginUser: (state, action: PayloadAction<any>) => {
             state.user = action.payload.user;
         },
-        registerUser: (state, action: PayloadAction<registerUserType>) => {
+        registerUser: (state, action: PayloadAction<any>) => {
             console.log(action.payload)
             state.tempUserDetails = action.payload;
         },

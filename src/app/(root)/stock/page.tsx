@@ -4,197 +4,77 @@ import Layout from "@/Components/common/CommonLayout";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import Arduino from "@/assets/arduino.jpeg";
-import { Button, FileInput, Label, Modal, TextInput } from "flowbite-react";
+import { TextInput } from "flowbite-react";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { FaRegEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
-import InputField from "@/Components/common/InputField";
-import { deleteStorage, fileToUrlLink } from "@/utils/data";
-import { toast } from "react-hot-toast";
-import { Form, Formik } from "formik";
-import * as Yup from "yup";
+import { deleteStorage } from "@/utils/data";
 import { ComponentsType, resComponentsType } from "@/type";
-import axios from "axios";
-import Loader from "@/Components/common/Loader";
-import ImageCropUpload from "@/Components/common/CroppedImage";
+import axios from "axios"; 
+import {useAsyncHandler } from "@/utils/asyncHandler";
+import dynamic from "next/dynamic";
+const StockModal=dynamic(()=>import('@/Components/modals/StockModal'),{ssr:false});
 
-interface cerType {
-    url: String;
-    refId: String
-}
 
 const Stock = () => {
     const [searchVal, setSearchVal] = useState("");
     const [openModal, setOpenModal] = useState(false);
-    const [photo, setPhoto] = useState("");
-    const [loading, setLoading] = useState(false);
     const [isUpdate, setIsUpdate] = useState(false);
+    const [photo, setPhoto] = useState<string>("");
     const [resCompList, setResCompList] = useState<resComponentsType[]>();
     const [compDetails, setCompDetails] = useState<ComponentsType>({
         photo: "",
         name: "",
         modelNo: "",
-        qty: null,
+        qty: 1,
     });
-
-    const downloadUrl = async (imgUrl: string) => {
-        setPhoto(imgUrl);
-    };
 
     // update values
     const openUpdate = async (value: ComponentsType) => {
         setIsUpdate(true);
-        const { name, modelNo, qty, photo } = value;
-        setCompDetails({ name, modelNo, qty });
-        // @ts-ignore
-        setPhoto(photo)
+        setCompDetails(value);
+        setPhoto(value.photo);
         setOpenModal(true);
     };
 
-    const AddOrUpdate = async (path: string, values: ComponentsType) => {
-        if (!photo) {
-            toast.error("Please upload a photo");
-            return;
-        }
-        try {
-            setLoading(true);
-            values.photo = photo;
-            const { data } = await axios.post(`/api/stock/${path}`, values);
-            values.photo = photo;
-            toast.success(data.message);
-            getAllComp();
-            resetAllData();
-        } catch (error) {
-            // @ts-ignore
-            const errMsg = error?.response?.data?.message;
-            toast.error(errMsg);
-        } finally {
-            setLoading(false);
-        }
-    };
-    const deleteComp = async (values: ComponentsType) => {
-        try {
-            setLoading(true);
-            const { data } = await axios.post(`/api/stock/remove`, values);
-            toast.success(data.message);
-            if (values.photo) await deleteStorage(String(values.photo))
-            getAllComp();
-            resetAllData();
-        } catch (error) {
-            // @ts-ignore
-            const errMsg = error?.response?.data?.message;
-            toast.error(errMsg);
-        } finally {
-            setLoading(false);
-        }
-    };
 
-    const getAllComp = async () => {
-        try {
-            setLoading(true);
-            const { data } = await axios.get(`/api/stock`);
-            // console.log(data);
-            setResCompList(data.components);
-        } catch (error) {
-            // @ts-ignore
-            const errMsg = error?.response?.data?.message;
-            toast.error(errMsg);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const deleteComp =useAsyncHandler(async (values: ComponentsType) => {
+        await axios.post(`/api/stock/remove`, values);
+        if (values.photo) await deleteStorage(String(values.photo))
+        getAllComp();
+    });
+
+    const getAllComp =useAsyncHandler(async () => {
+        const { data } = await axios.get(`/api/stock`);
+        setResCompList(data.components);
+    });
 
     const resetAllData = () => {
         setCompDetails({
             photo: "",
             name: "",
             modelNo: "",
-            qty: null,
+            qty: 1,
         });
-        setPhoto("");
         setIsUpdate(false);
+        setPhoto('');
         setOpenModal(false);
     };
 
     useEffect(() => {
         getAllComp();
-    }, []);
-
-    const validate = Yup.object({
-        name: Yup.string()
-            .required("model name is required")
-            .max(20, "model name at most 20 characters"),
-        modelNo: Yup.string().max(30, "model no at most 20 characters"),
-        qty: Yup.number().required("qty is required"),
-    });
-
-    if (loading) return <Loader />;
+    }, [openModal]);
 
     return (
         <>
-            <Modal show={openModal} size={"md"} onClose={resetAllData}>
-                <Modal.Header>
-                    {
-                        isUpdate ? "Update Component details" : "Add new Component details"
-                    }
-                </Modal.Header>
-                <Modal.Body>
-                    <Formik
-                        initialValues={compDetails}
-                        validationSchema={validate}
-                        onSubmit={(values) =>
-                            isUpdate
-                                ? AddOrUpdate(`update`, values)
-                                : AddOrUpdate(`add`, values)
-                        }
-                    >
-                        {(formik) => (
-                            <Form>
-                                <div className="flex items-center gap-x-4">
-                                    <div className="w-16 h-16 bg-gray-200 min-w-16 rounded-md">
-                                        {photo && <Image src={photo} alt="component" width={50} height={50} className="w-full h-full aspect-square" />}
-                                    </div>
-                                    <div className="w-full">
-                                        <div className=" block">
-                                            <Label htmlFor="file" value="Model photo" />
-                                        </div>
-                                        <ImageCropUpload aspect={1 / 1} onUploadComplete={downloadUrl} fileType="Components" />
-                                    </div>
-                                </div>
-                                <InputField
-                                    name="name"
-                                    label="Component name"
-                                    placeholder="Enter component name"
-                                    disabled={isUpdate}
-                                />
-                                <InputField
-                                    name="modelNo"
-                                    label="Model No"
-                                    placeholder="Enter Model No"
-                                />
-                                <InputField
-                                    type="number"
-                                    name="qty"
-                                    label="Quantity"
-                                    placeholder="Enter quantity"
-                                />
-                                <div className="flex items-center gap-x-4 mt-4">
-                                    <Button
-                                        type="submit"
-                                        className={`button ${photo === "" && "opacity-50 cursor-not-allowed"}`}
-                                        disabled={photo === ""}
-                                    >
-                                        {isUpdate ? "Update" : "Add Comp."}
-                                    </Button>
-                                    <button type="reset" className="button bg-red-500">
-                                        Reset{" "}
-                                    </button>
-                                </div>
-                            </Form>
-                        )}
-                    </Formik>
-                </Modal.Body>
-            </Modal>
+            <StockModal
+                openModal={openModal}
+                closedModal={resetAllData}
+                isUpdate={isUpdate}
+                fields={compDetails}
+                photo={photo}
+                updatePhoto={(val) => setPhoto(val)}
+            />
             <section className="mb-20">
                 <Layout header="stock">
                     <div className="flex justify-between items-center mb-4">
@@ -215,51 +95,52 @@ const Stock = () => {
                     {
                         resCompList ?
                             <>
-
-                                <div className="w-full h-full grid grid-cols-4 gap-8">
+                                <div className="w-full h-full grid grid-cols-4 gap-6">
                                     {resCompList
                                         ?.filter((ele) =>
                                             ele.name.toLowerCase().includes(searchVal.toLowerCase())
                                         )
                                         .map((item, i) => (
                                             <div
-                                                className="w-full h-[15rem] rounded-lg border shadow-lg bg-white"
+                                                className="w-full h-auto rounded-lg border shadow-lg bg-white overflow-hidden"
                                                 key={i}
                                             >
                                                 <Image
                                                     src={item.photo ? item.photo : Arduino}
-                                                    className="w-full h-32 object-contain mix-blend-multiply p-3"
+                                                    className="w-full h-32 object-contain mix-blend-multiply p-3 bg-gray-50"
                                                     alt="stock"
                                                     width={100}
                                                     height={100}
                                                     priority
                                                 />
-                                                <div className="w-full py-2 px-3 text-sm font-medium text-gray-800">
+                                                <div className="w-full py-3 px-3 text-sm font-medium text-gray-800">
                                                     <h1 className="text-base font-semibold capitalize">
                                                         {item.name}
                                                     </h1>
                                                     <p>
                                                         Model No:
-                                                        <span className="text-gray-600 text-xs ms-2">
+                                                        <span className="text-gray-600 text-xs ms-2 uppercase">
                                                             {item.modelNo}
                                                         </span>
                                                     </p>
-                                                    <p>
-                                                        Qty-
-                                                        <span className="text-gray-600 text-sm ms-2">{item.qty}</span>
-                                                    </p>
-                                                </div>
-                                                <div className="mt-auto flex items-center justify-center space-x-4">
-                                                    <FaRegEdit
-                                                        size={18}
-                                                        className="text-green-500 cursor-pointer"
-                                                        onClick={() => openUpdate(item)}
-                                                    />
-                                                    <MdDelete
-                                                        size={20}
-                                                        className="text-red-500 cursor-pointer"
-                                                        onClick={() => deleteComp(item)}
-                                                    />
+                                                    <div className="flex items-center justify-between">
+                                                        <p className=" text-sm">
+                                                            Qty-
+                                                            <span className="text-gray-600 ms-2">{item.qty}</span>
+                                                        </p>
+                                                        <div className="mt-auto flex items-center justify-center space-x-4">
+                                                            <FaRegEdit
+                                                                size={16}
+                                                                className="text-green-500 cursor-pointer"
+                                                                onClick={() => openUpdate(item)}
+                                                            />
+                                                            <MdDelete
+                                                                size={16}
+                                                                className="text-red-500 cursor-pointer"
+                                                                onClick={() => deleteComp(item)}
+                                                            />
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         ))}
@@ -274,26 +155,3 @@ const Stock = () => {
 };
 
 export default Stock;
-//     return (
-//         <div className="w-full h-[16rem] rounded-lg border shadow-lg bg-white">
-//             <Image
-//                 src={Arduino}
-//                 className="w-full h-32 object-contain mix-blend-multiply"
-//                 alt="stock"
-//             />
-//             <div className="w-full py-2 px-6 text-sm font-medium text-gray-800">
-//                 <h1 className="text-lg font-semibold capitalize">arduino board</h1>
-//                 <p>
-//                     Model No: <span className="text-gray-600 ms-2">Uno</span>
-//                 </p>
-//                 <p>
-//                     Qty-<span className="text-gray-600 ms-2">3</span>
-//                 </p>
-//             </div>
-//             <div className="flex items-center justify-center space-x-4">
-//                 <FaRegEdit size={20} className="text-green-500 cursor-pointer" />
-//                 <MdDelete size={25} className="text-red-500 cursor-pointer" />
-//             </div>
-//         </div>
-//     );
-// };

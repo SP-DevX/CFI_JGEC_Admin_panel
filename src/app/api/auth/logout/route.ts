@@ -1,12 +1,8 @@
-import User from "@/model/userModel";
+ 
 import { NextRequest, NextResponse } from "next/server";
 
-export async function PATCH(req: NextRequest) {
-    try {
-        const { email } = await req.json();
-        const user = await User.findOne({ email })
-        user.isOnline = false;
-        await user.save();
+export async function POST(req: NextRequest) {
+    try { 
         const response = NextResponse.json(
             { message: "log out successful" },
             { status: 200 }

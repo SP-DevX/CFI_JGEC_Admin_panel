@@ -22,7 +22,7 @@ function TopBar() {
                     </Link>
                     <FaCircleUser
                         className="cursor-pointer mx-2"
-                        onClick={() => setOpenProfile(true)}
+                        onClick={() => setOpenProfile(!openProfile)}
                     />
                 </div>
             }

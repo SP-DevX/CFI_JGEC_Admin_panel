@@ -4,8 +4,8 @@ import { NextRequest } from "next/server";
 // This function can be marked `async` if using `await` inside
 export function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname;
-    const isPublic = path === '/login' || path === '/register';
-    const token = request.cookies.get('token')?.value || '';
+    const isPublic = path === '/login';
+    const token = request.cookies.get('token')?.value || ''; 
     if (isPublic && token) {
         return NextResponse.redirect(new URL('/', request.nextUrl));
     }
@@ -18,8 +18,6 @@ export function middleware(request: NextRequest) {
 export const config = {
     matcher: [
         '/login',
-        '/register',
-        "/forget-password",
         '/',
         '/notice',
         '/events',

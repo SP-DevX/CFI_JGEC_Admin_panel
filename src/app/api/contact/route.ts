@@ -7,12 +7,11 @@ connectDB();
 
 export async function POST(req: NextRequest) {
     try {
-        console.log("enter request");
-        
-        const { name, email, message, mobile } = await req.json();
-        console.log(name, email, message, mobile);
-        const newHelp = await Help.create(name, email, message, mobile);
-        console.log(newHelp);
+        const reqBody = await req.json();
+        const { email, message } = reqBody;
+        const findRes = await Help.findOne({ $and: [{ email, message }] })
+        if (findRes) return NextResponse.json({ message: "Already submit the message" }, { status: 409 })
+        await Help.create(reqBody);
         return NextResponse.json({ message: "Response is stored successfully" }, { status: 201 });
     } catch (error: any) {
         console.log(error);

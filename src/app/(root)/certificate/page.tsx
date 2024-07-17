@@ -2,14 +2,15 @@
 
 import React, { useEffect, useState } from "react";
 import Layout from "@/Components/common/CommonLayout";
-import { Modal } from "flowbite-react";
+import { Button, Modal } from "flowbite-react";
 import Link from "next/link";
-import Loader from "@/Components/common/Loader";
 import axios from "axios";
 import Image from "next/image";
 import Folder from "@/assets/folder.png";
-import { toast } from "react-hot-toast";
 import { MdDelete } from "react-icons/md";
+import { useAsyncHandler } from "@/utils/asyncHandler";
+import { useRouter } from "next/navigation";
+import { deleteStorage } from "@/utils/data";
 
 type props = {
     _id: string;
@@ -21,73 +22,51 @@ type props = {
 };
 
 const Category = () => {
+    const router = useRouter();
     const [category, setCategory] = useState("");
     const [openModal, setOpenModal] = useState(false);
-    const [loading, setLoading] = useState(false);
     const [categoryList, setCategoryList] = useState<props[]>([]);
 
-    const CreateCategory = async () => {
-        if (!category) {
-            toast.error("Category is required");
-            return;
-        }
-        try {
-            setLoading(true);
-            await axios.post(`/api/certificate/create`, {
-                category
-            });
-            allCategory();
-            setCategory("");
-            setOpenModal(false);
-        } catch (error: any) {
-            console.log(error);
-            toast.error(error.message);
-        } finally {
-            setLoading(false);
-        }
+    const resetAll = () => {
+        setCategory("");
+        setOpenModal(false);
     };
 
-    const deleteFolder = async (id: string) => {
-        try {
-            setLoading(true); 
-            const { data } = await axios.post(`/api/certificate/delete`, {
-                id
-            });
-            toast.success(data.message)
-            allCategory();
-            setCategory("");
-            setOpenModal(false);
-        } catch (error: any) {
-            console.log(error);
-            toast.error(error.message);
-        } finally {
-            setLoading(false);
-        }
-    }
+    const CreateCategory = useAsyncHandler(async () => {
+        await axios.post(`/api/certificate/create`, {
+            category
+        });
+        resetAll();
+    });
 
-    const allCategory = async () => {
-        try {
-            setLoading(true);
-            const { data } = await axios.get(`/api/certificate`);
-            setCategoryList(data.list);
-        } catch (error: any) {
-            console.log(error);
-            toast.error(error.message);
-        } finally {
-            setLoading(false);
+    const deleteFolder = useAsyncHandler(async (item: props) => {
+        const { _id, categoryList } = item;
+        await axios.post(`/api/certificate/delete`, {
+            id: _id
+        });
+        if (categoryList.length) {
+            for (let i = 0; i < categoryList.length; i++) {
+                await deleteStorage(categoryList[i].url);
+            }
         }
-    };
+        allCategory();
+        resetAll();
+    })
+
+    const allCategory = useAsyncHandler(async () => {
+        const { data } = await axios.get(`/api/certificate`);
+        setCategoryList(data.list);
+    });
 
     useEffect(() => {
         allCategory();
-    }, []);
+    }, [openModal]);
 
-    if (loading) return <Loader />;
 
     return (
         <Layout header={"certificate"}>
             <div
-                className="button w-40 ms-auto mb-6"
+                className="button w-40 ms-auto mb-4"
                 onClick={() => setOpenModal(true)}
             >
                 Create Folder
@@ -108,12 +87,13 @@ const Category = () => {
                         />
                     </Modal.Body>
                     <Modal.Footer>
-                        <button
+                        <Button
                             className="button ms-0 w-40 bg-green-500"
                             onClick={CreateCategory}
+                            disabled={category === ""}
                         >
                             Create
-                        </button>
+                        </Button>
                     </Modal.Footer>
                 </Modal>
                 {
@@ -127,16 +107,19 @@ const Category = () => {
                                     <Image
                                         src={Folder}
                                         alt="folder"
-                                        className="w-full object-contain"
+                                        className="w-full object-contain cursor-pointer"
+                                        onClick={() => router.push(`/certificate/${item.category}`)}
                                     />
-                                    <Link href={`/certificate/${item.category}`}>
-                                        <h1 className="text-gray-600 uppercase font-medium text-center ">
-                                            {item.category}
-                                        </h1>
-                                    </Link>
-                                    <button className="top-2 absolute right-2 text-red-500 text-xl" onClick={() => deleteFolder(item._id)}>
-                                        <MdDelete />
-                                    </button>
+                                    <div className="flex items-center justify-between gap-x-3 px-2 py-3">
+                                        <Link href={`/certificate/${item.category}`}>
+                                            <h1 className="text-blue-600 uppercase font-medium text-center text-sm ">
+                                                {item.category}
+                                            </h1>
+                                        </Link>
+                                        <button className="text-red-500 text-lg" onClick={() => deleteFolder(item)}>
+                                            <MdDelete />
+                                        </button>
+                                    </div>
                                 </div>
                             ))}
                         </div> :

@@ -3,11 +3,11 @@ import Event from "@/model/eventsModel";
 import { NextRequest, NextResponse } from "next/server"
 
 connectDB();
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
     try { 
-        const { _id } = await req.json();
-        await Event.findByIdAndDelete(_id)
-        return NextResponse.json({ message: "Event is deleted" }, { status: 201 });
+        const event = await Event.findById(params.id);
+        if (!event) return NextResponse.json({ message: "event not exists" }, { status: 404})
+        return NextResponse.json({ event }, { status: 200 });
     } catch (error) {
         console.log(error);
         return NextResponse.json({ message: "Internal error" }, { status: 500 });

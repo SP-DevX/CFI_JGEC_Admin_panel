@@ -1,6 +1,5 @@
-import { ObjectId } from "mongodb"
 import { StaticImageData } from "next/image"
-import { Url } from "url"
+
 
 export type props = {
     openModal: boolean,
@@ -12,7 +11,7 @@ export interface NoticeType {
     description: string,
     date: any,
     link: string,
-    _id?: string | ObjectId,
+    _id?: string,
 }
 export interface photoUrlType {
     photo?: string | StaticImageData
@@ -22,23 +21,30 @@ export interface EventsItemsType {
     shortName: string,
     fullName: string,
     description: string,
-    date: string,
-    type: string,
+    photo?: string,
+    rules?: string,
+    prizes?: string,
+    venue?: string,
+    time_line?: string,
+    date: string, 
     organizer: string,
-    _id?: string | ObjectId,
-    photo?: string 
+    _id?: string,
+    important_details?: string,
+    reg_date_start?: string,
+    reg_date_end?: string,
 }
 
 
 
 export interface ComponentsType {
-    photo?: string | StaticImageData,
+    _id?: string,
+    photo: string,
     name: string,
     modelNo: string,
-    qty: number | null,
+    qty: number,
 }
 export interface resComponentsType extends ComponentsType {
-    _id: ObjectId
+    _id: string
 }
 
 export interface RegisterUserType {

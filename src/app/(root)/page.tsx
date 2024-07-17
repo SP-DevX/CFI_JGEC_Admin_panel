@@ -3,7 +3,6 @@ import React from 'react'
 import Layout from "@/Components/common/CommonLayout";
 import { DashboardItems } from '@/utils/DashboardITems';
 import Link from "next/link"
-import AllUser from '@/Components/AllUser'; 
 
 const Dashboard = () => {
     return (
@@ -27,7 +26,6 @@ const Dashboard = () => {
                         })
                     }
                 </div>
-                <AllUser/>
             </div>
         </Layout>
     )

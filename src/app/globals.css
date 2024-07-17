@@ -15,6 +15,20 @@ body {
   overflow-y: hidden !important;
   font-family: "Poppins", sans-serif;
 }
+.react-quill ol,
+.react-quill ul{
+  list-style: decimal !important;
+  padding-left: 1rem;
+  row-gap: 6px; 
+  margin-bottom: 2rem;
+}
+.react-quill ol li,
+.react-quill ul li{
+  margin-bottom: 10px;
+}
+.react-quill ul{
+  list-style: disc !important;
+}
 
 @layer base {
   .header {

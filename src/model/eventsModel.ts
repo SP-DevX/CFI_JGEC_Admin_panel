@@ -1,24 +1,21 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
 const eventsSchema = new mongoose.Schema({
-    shortName: String,
-    fullName: String,
-    description: String,
-    photo: String,
+    eventId: String,
     date: String,
-    type: String,
+    description: String,
+    event_end_time: String,
+    event_start_time: String,
+    fullName: String,
     organizer: String,
-    prizePool: [String],
-    winners: [
-        {
-            position: String,
-            teamName: String,
-            teamMembers: [String],
-            modelName: String,
-            modelPhoto: String
-        }
-    ]
-})
+    photo: String,
+    prizes: String,
+    reg_date_end: String,
+    reg_date_start: String,
+    rules: String,
+    shortName: String,
+    venue: String,
+},{timestamps: true})
 
-const Event = mongoose.models.Event ||  mongoose.model('Event', eventsSchema);
-export default Event;
+const Event = mongoose.models.Event || mongoose.model('Event', eventsSchema);
+export default Event

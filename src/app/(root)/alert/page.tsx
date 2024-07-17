@@ -1,10 +1,11 @@
 "use client";
 
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Layout from "@/Components/common/CommonLayout";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import {
     Badge,
+    Button,
     Label,
     Modal,
     Table,
@@ -16,77 +17,56 @@ import { MdPending } from "react-icons/md";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { HiCheck } from "react-icons/hi2";
-import Loader from "@/Components/common/Loader";
+import { useAsyncHandler } from "@/utils/asyncHandler";
+import dynamic from "next/dynamic";
+import { contactResType } from "@/index";
 
 const Alert = () => {
+    const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }), []);
     const [searchVal, setSearchVal] = useState("");
     const [openModal, setOpenModal] = useState(false);
-    const [loading, setLoading] = useState(false);
     const [contactList, setContactList] = useState<contactResType[]>([]);
     const [answerQuery, setAnswerQuery] = useState({
         _id: "",
-        question: "",
+        email: "",
+        query: "",
         solution: "",
     });
 
-    const getContactRes = async () => {
-        setLoading(true);
-        try {
-            const { data } = await axios.get(`/api/contact/get-response`);
-            console.log(data);
-            setContactList(data.allRes);
-        } catch (error: any) {
-            console.log(error);
-            toast.error(error.message);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const getContactRes = useAsyncHandler(async () => {
+        const { data } = await axios.get(`/api/contact/get-response`);
+        setContactList(data.allRes);
+    });
+
     const solvedQuery = (value: contactResType) => {
         setOpenModal(true);
+        const { _id, email, message, solution } = value;
+        setAnswerQuery({ _id, email, query: message, solution });
+    };
+
+    const handelSaveRes = useAsyncHandler(async () => {
+        await axios.post(`/api/contact/resolve`, answerQuery);
+        getContactRes();
+        toast.success("Query solution saved successfully");
         setAnswerQuery({
-            _id: value._id,
-            question: value.message,
-            solution: value.solution,
-        });
-    };
+            _id: "",
+            email: "",
+            query: "",
+            solution: "",
+        })
+        setOpenModal(false)
+    });
 
-    const handelSaveRes = async (e: any) => {
-        e.preventDefault();
-        setLoading(true);
-        try {
-            console.log(answerQuery);
-            const { data } = await axios.post(`/api/contact/resolve`, answerQuery);
-            console.log(data);
-            getContactRes();
-            toast.success("Query solution saved successfully");
-        } catch (error: any) {
-            console.log(error);
-            toast.error(error.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const deleteQuery = async (_id: string) => {
-        setLoading(true);
-        try {
-            await axios.post(`/api/contact/delete`, { _id });
-            toast.success("Query deleted successfully");
-            getContactRes();
-        } catch (error: any) {
-            console.log(error);
-            toast.error(error.message);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const deleteQuery = useAsyncHandler(async (_id: string) => {
+        await axios.post(`/api/contact/delete`, { _id });
+        toast.success("Query deleted successfully");
+        getContactRes();
+    });
 
     useEffect(() => {
         getContactRes();
-    }, []);
+    }, [openModal]);
 
-    if (loading) return <Loader />;
     return (
         <Layout header={"Alerts"}>
             {contactList.length > 0 ? (
@@ -102,30 +82,31 @@ const Alert = () => {
                             />
                         </div>
                     </div>
-                    <Modal show={openModal} size={"lg"} onClose={() => setOpenModal(false)}>
+                    <Modal show={openModal} size={"xl"} onClose={() => setOpenModal(false)}>
                         <Modal.Header>Resolve Query</Modal.Header>
                         <Modal.Body>
-                            <form onSubmit={handelSaveRes}>
-                                <p>Query:-</p>
-                                <h1 className="text-base font-medium mb-2">
-                                    {answerQuery.question}
-                                </h1>
-                                <Label htmlFor="query">Resolve the query</Label>
-                                <Textarea
-                                    rows={3}
-                                    name="solution"
-                                    placeholder="Enter the solution"
-                                    className="w-full rounded-md"
-                                    onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-                                        setAnswerQuery({ ...answerQuery, solution: e.target.value })
-                                    }
-                                    required
-                                />
-                                <button type="submit" className="button w-36 bg-green-500 mt-4">
-                                    Update Query
-                                </button>
-                            </form>
+                            <Label htmlFor="query" >Query</Label>
+                            <Textarea defaultValue={answerQuery.query} disabled className="mt-1.5 mb-3 resize-none text-gray-800" />
+                            <Label htmlFor="query">Resolve the query</Label>
+                            <ReactQuill
+                                theme="snow"
+                                className="h-60 mb-12 mt-1.5"
+                                value={answerQuery.solution}
+                                onChange={(value) =>
+                                    setAnswerQuery({ ...answerQuery, solution: value })
+                                }
+                            />
                         </Modal.Body>
+                        <Modal.Footer>
+                            <Button
+                                type="submit"
+                                className="button w-36 bg-green-500 "
+                                onClick={handelSaveRes}
+                                disabled={answerQuery.solution === ""}
+                            >
+                                Update Query
+                            </Button>
+                        </Modal.Footer>
                     </Modal>
 
 
@@ -133,80 +114,72 @@ const Alert = () => {
                         {
                             <Table hoverable>
                                 <Table.Head>
-                                    <Table.HeadCell>Srl. No.</Table.HeadCell>
-                                    <Table.HeadCell>Query</Table.HeadCell>
-                                    <Table.HeadCell className="text-nowrap">
-                                        Student Name
+                                    <Table.HeadCell className="p-2">No.</Table.HeadCell>
+                                    <Table.HeadCell className="p-2">Query</Table.HeadCell>
+                                    <Table.HeadCell className="text-nowrap p-2">
+                                        Person Name
                                     </Table.HeadCell>
-                                    <Table.HeadCell>Email & Mobile No.</Table.HeadCell>
-                                    <Table.HeadCell>date</Table.HeadCell>
-                                    <Table.HeadCell>Status</Table.HeadCell>
-                                    <Table.HeadCell>Solution</Table.HeadCell>
-                                    <Table.HeadCell>Actions</Table.HeadCell>
+                                    <Table.HeadCell className="p-2">Email & Mobile No.</Table.HeadCell>
+                                    <Table.HeadCell className="p-2">date</Table.HeadCell>
+                                    <Table.HeadCell className="p-2">Status</Table.HeadCell>
+                                    <Table.HeadCell className="p-2">Solution</Table.HeadCell>
+                                    <Table.HeadCell className="p-2">Actions</Table.HeadCell>
                                 </Table.Head>
                                 <Table.Body className="divnamee-y">
-                                    {contactList
-                                        .filter((ele) =>
-                                            ele.name.toLowerCase().includes(searchVal.toLowerCase())
-                                        )
-                                        .map((item, i) => {
-                                            const { name, mobile, email, status, message, date } =
-                                                item;
-                                            return (
-                                                <Table.Row className="bg-white" key={i}>
-                                                    <Table.Cell>{i + 1}</Table.Cell>
-                                                    <Table.Cell>{message}</Table.Cell>
-                                                    <Table.Cell className=" capitalize">
-                                                        {name}
-                                                    </Table.Cell>
-                                                    <Table.Cell>
-                                                        <div className="flex items-center gap-x-3 mb-1">
-                                                            <MdEmail />
-                                                            {email}
-                                                        </div>
-                                                        <div className="flex items-center gap-x-3">
-                                                            <MdCall />
-                                                            {mobile}
-                                                        </div>
-                                                    </Table.Cell>
-                                                    <Table.Cell>
-                                                        {new Date(date).toLocaleDateString()}
-                                                    </Table.Cell>
-                                                    <Table.Cell>
-                                                        {!status ? (
-                                                            <Badge color="purple" icon={MdPending}>
-                                                                Pending
-                                                            </Badge>
-                                                        ) : (
-                                                            <Badge color="success" icon={HiCheck}>
-                                                                Resolved
-                                                            </Badge>
-                                                        )}
-                                                    </Table.Cell>
-                                                    <Table.Cell>
-                                                        <button
-                                                            onClick={() => solvedQuery(item)}
-                                                            className="px-2 py-1.5 rounded-full bg-green-200 text-green-600 text-xs text-nowrap font-semibold "
+                                    {contactList.map((item, i) => {
+                                        const { name, mobile, email, status, message, date } = item;
+                                        return (
+                                            <Table.Row className="bg-white" key={i}>
+                                                <Table.Cell className="p-2">{i + 1}</Table.Cell>
+                                                <Table.Cell className="text-xs p-2">{message}</Table.Cell>
+                                                <Table.Cell className=" capitalize text-sm p-2 text-nowrap">
+                                                    {name}
+                                                </Table.Cell>
+                                                <Table.Cell className="p-2 text-xs text-gray-600">
+                                                    <div className="flex items-center gap-x-1 mb-1">
+                                                        <MdEmail />
+                                                        {email}
+                                                    </div>
+                                                    <div className="flex items-center gap-x-1">
+                                                        <MdCall />
+                                                        {mobile}
+                                                    </div>
+                                                </Table.Cell>
+                                                <Table.Cell className="p-2 text-xs text-gray-600">
+                                                    {new Date(date).toLocaleDateString()}
+                                                </Table.Cell>
+                                                <Table.Cell className="p-2">
+                                                    {!status ? (
+                                                        <Badge color="purple" icon={MdPending}>
+                                                            Pending
+                                                        </Badge>
+                                                    ) : (
+                                                        <Badge color="success" icon={HiCheck}>
+                                                            Resolved
+                                                        </Badge>
+                                                    )}
+                                                </Table.Cell>
+                                                <Table.Cell className="p-2">
+                                                    <button
+                                                        onClick={() => solvedQuery(item)}
+                                                        className="px-2 py-1.5 rounded-full bg-green-200 text-green-600 text-xs text-nowrap font-semibold "
+                                                    >
+                                                        Solve Now
+                                                    </button>
+                                                </Table.Cell>
+                                                <Table.Cell className="p-2">
+                                                    <div className="flex text-xl items-center">
+                                                        <div
+                                                            onClick={() => deleteQuery(item._id)}
+                                                            className="cursor-pointer text-red-500 hover:bg-gray-200 p-2 rounded-full "
                                                         >
-                                                            Solve Now
-                                                        </button>
-                                                    </Table.Cell>
-                                                    <Table.Cell>
-                                                        <div className="flex text-xl items-center">
-                                                            {/* <div className=" cursor-pointer text-green-500 hover:bg-gray-200 p-2 rounded-full ">
-                                                            <FaUserEdit />
-                                                        </div> */}
-                                                            <div
-                                                                onClick={() => deleteQuery(item._id)}
-                                                                className="cursor-pointer text-red-500 hover:bg-gray-200 p-2 rounded-full "
-                                                            >
-                                                                <MdDelete />
-                                                            </div>
+                                                            <MdDelete />
                                                         </div>
-                                                    </Table.Cell>
-                                                </Table.Row>
-                                            );
-                                        })}
+                                                    </div>
+                                                </Table.Cell>
+                                            </Table.Row>
+                                        );
+                                    })}
                                 </Table.Body>
                             </Table>
                         }

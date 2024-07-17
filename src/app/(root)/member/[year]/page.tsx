@@ -1,18 +1,12 @@
 "use client";
 
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Layout from "@/Components/common/CommonLayout";
-import InputField from "@/Components/common/InputField";
-import SelectionField from "@/Components/common/SelectionField";
-import Loader from "@/Components/common/Loader";
-import { Select, Table } from "flowbite-react";
-import { Button, Label, Modal, TextInput, FileInput } from "flowbite-react";
-import { deleteStorage, departments, fileToUrlLink, positions, years } from "@/utils/data";
-import { Form, Formik } from "formik";
-import * as Yup from "yup";
+import { Table } from "flowbite-react";
+import { TextInput } from "flowbite-react";
+import { deleteStorage } from "@/utils/data";
 import axios from "axios";
 import Link from "next/link";
-import { toast } from "react-hot-toast";
 import {
     FaFacebook,
     FaInstagram,
@@ -21,21 +15,22 @@ import {
 } from "react-icons/fa";
 import { MdEmail, MdCall, MdDelete } from "react-icons/md";
 import { FaMagnifyingGlass } from "react-icons/fa6";
-import Image, { StaticImageData } from "next/image";
-import { useParams } from "next/navigation"; 
-import ImageCropUpload from "@/Components/common/CroppedImage";
-import { RxCross1 } from "react-icons/rx";
+import Image from "next/image";
+import { useParams } from "next/navigation";
+import dynamic from "next/dynamic";
+import { useAsyncHandler } from "@/utils/asyncHandler";
+import { membersType, resMembersType } from "@/index";
+const MembersModal = dynamic(() => import('@/Components/modals/MembersModal'), { ssr: false })
 
 
 const Members = () => {
     const [openModal, setOpenModal] = useState(false);
     const { year } = useParams();
-    const [loading, setLoading] = useState(false);
     const [isUpdate, setIsUpdate] = useState(false);
     const [resAllMembers, setResAllMembers] = useState<resMembersType[]>();
     const [searchVal, setSearchVal] = useState("");
-    const [photo, setPhotoUrl] = useState("");
     const [selectPositions, setSelectPositions] = useState<string[]>([]);
+    const [photo, setPhoto] = useState<string>("");
     const [memberDetails, setMemberDetails] = useState<membersType>({
         photo: "",
         name: "",
@@ -48,36 +43,6 @@ const Members = () => {
         instagram: "",
         linkedin: "",
     });
-
-    // validate inputs details
-    const validate = Yup.object({
-        name: Yup.string().required("name is required"),
-        year: Yup.number().required("select the year"),
-        email: Yup.string()
-            .email("enter a valid email")
-            .required("email is required"),
-        phone: Yup.string()
-            .min(10, "mobile number must be 10 digits")
-            .max(10, "mobile number must be 10 digits")
-            .required("mobile no is required"),
-    });
-
-    // upload the photo into firebase storage
-    const downloadUrl = async (url: string) => {
-        setPhotoUrl(url);
-    };
-
-    const handelSelect = (e: ChangeEvent<HTMLSelectElement>) => {
-        const item = e.target.value;
-        if (selectPositions.length > 0) {
-            const ind = selectPositions.findIndex((ele) => ele === item);
-            if (ind === -1) setSelectPositions([...selectPositions, e.target.value]);
-            else toast.error("Position already selected");
-        } else setSelectPositions([e.target.value]);
-    };
-    const removePosition = (value: string) => {
-        setSelectPositions((pre) => pre.filter((ele) => ele !== value));
-    };
 
     // reset values
     const resetAllData = async () => {
@@ -92,8 +57,6 @@ const Members = () => {
             instagram: "",
             linkedin: "",
         });
-        setPhotoUrl("");
-        setSelectPositions([]);
         setIsUpdate(false);
         setOpenModal(false);
     };
@@ -113,6 +76,7 @@ const Members = () => {
         } = value;
         setMemberDetails({
             name,
+            photo,
             position,
             year,
             dept,
@@ -121,111 +85,28 @@ const Members = () => {
             facebook,
             instagram,
             linkedin,
-        });
-        // @ts-ignore
-        setPhotoUrl(photo);
-        setSelectPositions(position)
+        }); 
         setOpenModal(true);
+        setPhoto(photo as string);
+        setSelectPositions(position);
     };
 
-    // get all alumni details
-    const getAllMembers = async () => {
-        try {
-            setLoading(true);
-            const { data } = await axios.get(`/api/members/${year}`);
-            // console.log(data.members);
-            setResAllMembers(data.members);
-        } catch (error) {
-            // @ts-ignore
-            const errMsg = error?.response?.data?.message;
-            toast.error(errMsg);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const AddOrUpdateMembers = async (path: string, values: membersType) => {
-        if (selectPositions.length == 0) {
-            toast.error("Please select positions");
-            return;
-        }
-        try {
-            setLoading(true);
-            values.photo = photo;
-            values.position = selectPositions;
-            const { data } = await axios.post(`/api/members/${path}`, values);
-            toast.success(data.message);
-            getAllMembers();
-            resetAllData();
-        } catch (error) {
-            // @ts-ignore
-            const errMsg = error?.response?.data?.message;
-            toast.error(errMsg);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    // add alumni details
-    // const addAlumni = async (values: membersType) => {
-    //     if (!photo) {
-    //         toast.error("Please upload a photo");
-    //         return;
-    //     }
-    //     try {
-    //         setLoading(true);
-    //         values.photo = photo;
-    //         const { data } = await axios.post("/api/alumni/add", values);
-    //         toast.success(data.message);
-    //         getAllMembers();
-    //         resetAllData();
-    //     } catch (error) {
-    //         toast.error("Error getting...")
-    //         console.log(error);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
-
-    // update alumni details
-    // const openUpdateDetails = async (values: membersType) => {
-    //     try {
-    //         setLoading(true);
-    //         values.photo = photo;
-    //         const { data } = await axios.post("/api/alumni/update", values);
-    //         toast.success(data.message)
-    //         getAllMembers();
-    //         resetAllData();
-    //     } catch (error) {
-    //         console.log(error);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
+    const getAllMembers = useAsyncHandler(async () => {
+        const { data } = await axios.get(`/api/members/${year}`);
+        setResAllMembers(data.members);
+    });
 
     // delete alumni details
-    const removeMembersDetails = async (values: membersType) => {
-        try {
-            setLoading(true);
-            const { data } = await axios.post(`/api/members/remove`, values);
-            toast.success(data.message);
-            if (values.photo) deleteStorage(values.photo)
-            getAllMembers();
-        } catch (error) {
-            console.log(error);
-            // @ts-ignore
-            const errMsg = error?.response?.data?.message;
-            toast.error(errMsg);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const removeMembersDetails = useAsyncHandler(async (values: membersType) => {
+        await axios.post(`/api/members/remove`, values);
+        if (values.photo) deleteStorage(values.photo)
+        getAllMembers();
+    });
 
     useEffect(() => {
         getAllMembers();
-    }, [year]);
+    }, [year, openModal]);
 
-    if (loading) return <Loader />;
 
     return (
         <Layout header="Members">
@@ -243,139 +124,16 @@ const Members = () => {
                     Add Member
                 </div>
             </div>
-            <Modal
-                show={openModal}
-                size="lg"
-                popup
-                onClose={resetAllData}
-            >
-                <Modal.Header className="ms-4 mt-2">
-                    {isUpdate ? "Update Member&apos;s details" : "Add new Member&apos;s details"}
-                </Modal.Header>
-                <Modal.Body>
-                    <Formik
-                        initialValues={memberDetails}
-                        validationSchema={validate}
-                        onSubmit={(values) =>
-                            isUpdate
-                                ? AddOrUpdateMembers("update", values)
-                                : AddOrUpdateMembers("add", values)
-                        }
-                    >
-                        {({ values, handleReset }) => (
-                            <Form>
-                                <InputField
-                                    name="name"
-                                    label={"Name"}
-                                    placeholder="Enter name"
-                                />
-                                <div className="my-2">
-                                    <div className="mb-1 block">
-                                        <Label
-                                            htmlFor={"position"}
-                                            value={
-                                                "Select Position (you can select multiple positions)"
-                                            }
-                                        />
-                                    </div>
-                                    <Select onChange={handelSelect}>
-                                        {positions.map((item: string) => (
-                                            <option value={item} key={item}>
-                                                {item}
-                                            </option>
-                                        ))}
-                                    </Select>
-                                    <div className="flex items-center flex-wrap gap-2 mt-2">
-                                        {selectPositions.length > 0 &&
-                                            selectPositions.map((item) => (
-                                                <div
-                                                    key={item}
-                                                    className="flex items-center gap-x-2 px-4 py-2 text-sm bg-violet-500 text-white  rounded-md"
-                                                >
-                                                    <p>{item}</p>
-                                                    <RxCross1
-                                                        className="cursor-pointer"
-                                                        onClick={() => removePosition(item)}
-                                                    />
-                                                </div>
-                                            ))}
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-2 gap-x-4">
-                                    <InputField
-                                        name="email"
-                                        label="Email"
-                                        placeholder="name@gamil.com"
-                                    />
-                                    <InputField
-                                        name="phone"
-                                        label={"Phone"}
-                                        placeholder="0123456789"
-                                    />
-                                </div>
-                                <div className="grid grid-cols-2 gap-x-4">
-                                    <SelectionField
-                                        name="year"
-                                        label="Select pass-out year"
-                                        data={years}
-                                        disabled
-                                    />
-                                    <SelectionField
-                                        name="dept"
-                                        label="Select department"
-                                        data={departments}
-                                    />
-                                </div>
-                                <div className="w-full my-3 flex items-center gap-x-8">
-                                    <div className=" min-w-16 w-16 h-16 bg-gray-300 rounded-md">
-                                        {photo && (
-                                            <Image
-                                                src={photo}
-                                                width={40}
-                                                height={40}
-                                                alt="profile"
-                                                className="w-16 h-16 rounded-md object-contain"
-                                            />
-                                        )}
-                                    </div>
-                                    <div className="w-full">
-                                        <Label className="pb-2">Upload Profile photo</Label>
-                                        <ImageCropUpload
-                                            aspect={1 / 1}
-                                            onUploadComplete={downloadUrl}
-                                            fileType="Members/"
-                                        />
-                                    </div>
-                                </div>
-                                <h1 className="text-lg font-semibold text-gray-800 my-2">
-                                    Add Social Media links
-                                </h1>
-                                <InputField name="facebook" icon={FaFacebook} />
-                                <InputField name="linkedin" icon={FaLinkedin} />
-                                <InputField name="instagram" icon={FaInstagram} />
-                                <div className="flex my-3 space-x-4">
-                                    {isUpdate ? (
-                                        <Button type="submit" disabled={photo === ""} className="button bg-blue-500">
-                                            Update
-                                        </Button>
-                                    ) : (
-                                        <Button type="submit" disabled={photo === ""} className="button w-36 bg-green-500">
-                                            Add Member
-                                        </Button>
-                                    )}
-                                    <button
-                                        onClick={handleReset}
-                                        type="reset"
-                                        className="button bg-red-500"
-                                    >
-                                        Reset
-                                    </button>
-                                </div>
-                            </Form>
-                        )}
-                    </Formik>
-                </Modal.Body>
-            </Modal>
+            <MembersModal
+                openModal={openModal}
+                closedModal={resetAllData}
+                fields={memberDetails}
+                isUpdate={isUpdate}
+                selectPositions={selectPositions}
+                setSelectPositions={setSelectPositions}
+                photo={photo}
+                setPhoto={setPhoto}
+            />
             <div>
                 {resAllMembers && resAllMembers.length > 0 ?
                     (

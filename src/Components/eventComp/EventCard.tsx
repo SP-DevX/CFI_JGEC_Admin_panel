@@ -1,30 +1,45 @@
-import { EventsItemsType } from '@/type'
-import { Button } from 'flowbite-react';
-import Image from 'next/image'
-import Link from 'next/link';
-import React from 'react'
-import { FaEdit } from 'react-icons/fa';
-import { MdDelete } from 'react-icons/md';
+import { EventsItemsType } from "@/type";
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
+import { FaEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
 
 interface PropsType {
-    props: EventsItemsType,
+    props: EventsItemsType;
     deleteEvent: CallableFunction;
     updateEvent: CallableFunction;
 }
 
-
-const EventCard: React.FC<PropsType> = ({ props, deleteEvent, updateEvent }) => {
-    const { _id, photo, shortName, description } = props;
+const EventCard: React.FC<PropsType> = ({
+    props,
+    deleteEvent,
+    updateEvent,
+}) => {
+    const { _id, photo, shortName } = props;
     return (
-        <div key={shortName} className='w-full  min-h-60 bg-white shadow-md shadow-indigo-100 rounded-lg  p-4'>
-            {/* @ts-ignore */}
-            <Image src={photo} alt='card img' width={200} height={400} className='w-full h-auto   object-contain rounded-md' />
-            <div className='pt-3'>
-                <h1 className='font-medium text-lg text-center uppercase pb-3'>{shortName}</h1>
-                <div className='flex items-center justify-center'>
-                    <Link href={`/events/${_id}`}>
-                        <button className='text-blue-500 me-3 w-20'>View</button>
-                    </Link>
+        <div
+            key={_id}
+            className="w-full max-h-72 bg-white shadow-md shadow-indigo-200 rounded-lg overflow-hidden border"
+        >
+            <Link href={`/events/${_id}`}>
+                <Image
+                    src={photo as string}
+                    alt="card img"
+                    width={200}
+                    height={400}
+                    unoptimized
+                    loading="lazy"
+                    className="w-full h-auto object-cover "
+                />
+            </Link>
+            <div className="py-3 px-4">
+                <Link href={`/events/${_id}`}>
+                    <h1 className="font-medium text-base mb-1 text-center uppercase ">
+                        {shortName}
+                    </h1>
+                </Link>
+                <div className="flex items-center justify-between"> 
                     <div
                         className=" cursor-pointer text-green-500 hover:bg-gray-200 p-2 rounded-full "
                         onClick={() => updateEvent(props)}
@@ -40,7 +55,7 @@ const EventCard: React.FC<PropsType> = ({ props, deleteEvent, updateEvent }) => 
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default EventCard
+export default EventCard;

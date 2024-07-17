@@ -3,15 +3,16 @@ import Event from "@/model/eventsModel";
 import { NextRequest, NextResponse } from "next/server"
 
 connectDB();
-export async function POST(req:NextRequest) {
+export async function POST(req: NextRequest) {
     try {
-        const {_id, shortName, fullName, description, date, type, organizer, photo } = await req.json();
-        const isExist = await Event.findOne({ shortName });
+        const reqBody = await req.json();
+        const { _id } = reqBody;
+        const isExist = await Event.findById(_id);
         if (!isExist)
             return NextResponse.json({ message: "Event is not exist " }, { status: 404 });
         await Event.findByIdAndUpdate(
-            isExist._id,
-            { fullName, description, date, type, organizer, photo },
+            _id,
+            reqBody,
             { new: true }
         )
         return NextResponse.json({ message: "Event is updated" }, { status: 201 });

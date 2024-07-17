@@ -10,6 +10,7 @@ declare interface loginUserType {
     password: string;
 }
 
+
 declare interface registerUserType extends LoginUserType {
     name: string;
     photo: string;
@@ -58,9 +59,27 @@ declare interface resMembersType extends membersType {
     }
 }
 
-declare interface galleryType{
+declare interface galleryType {
     _id: string
     title: string,
     date: string,
     photo: string
+}
+
+export interface EventsItemsType {
+    _id?: string;
+    eventId: string;
+    date: string;
+    description: string; 
+    event_end_time: string;
+    event_start_time: string;
+    fullName: string;
+    organizer: string;
+    photo: string;
+    prizes: string;
+    reg_date_end: string;
+    reg_date_start: string;
+    rules: string;
+    shortName: string; 
+    venue: string;
 }

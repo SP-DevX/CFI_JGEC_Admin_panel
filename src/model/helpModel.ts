@@ -1,6 +1,6 @@
-import mongoose, { InferSchemaType, model } from 'mongoose';
+import mongoose, { InferSchemaType, model, Schema } from 'mongoose';
 
-const ContactSchema = new mongoose.Schema({
+const ContactSchema = new Schema({
     name: String,
     email: String,
     mobile: String,

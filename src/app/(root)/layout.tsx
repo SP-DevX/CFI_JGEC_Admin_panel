@@ -1,5 +1,6 @@
 import Sidebar from "@/Components/Sidebar";
 import TopBar from "@/Components/TopBar";
+import 'react-quill/dist/quill.snow.css';
 
 export default function RootLayout({
     children,

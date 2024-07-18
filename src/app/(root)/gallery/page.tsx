@@ -4,14 +4,14 @@ import Layout from "@/Components/common/CommonLayout";
 import ImageCropUpload from "@/Components/common/CroppedImage";
 import Loader from "@/Components/common/Loader";
 import { galleryType } from "@/index";
-import {useAsyncHandler } from "@/utils/asyncHandler";
+import { useAsyncHandler } from "@/utils/asyncHandler";
 import { deleteStorage } from "@/utils/data";
 import axios from "axios";
 import { Button, Label, Modal, TextInput } from "flowbite-react";
 import Image from "next/image";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdDownload } from "react-icons/md";
 
 const Gallery = () => {
     const [loading, setLoading] = useState(false);
@@ -52,16 +52,25 @@ const Gallery = () => {
         }
     };
 
-    const deletePhoto =useAsyncHandler(async (value: galleryType) => {
+    const deletePhoto = useAsyncHandler(async (value: galleryType) => {
         await axios.post(`/api/gallery/delete`, value);
         await deleteStorage(value.photo);
         getPhotos();
     });
 
-    const getPhotos =useAsyncHandler(async () => {
+    const getPhotos = useAsyncHandler(async () => {
         const { data } = await axios.get(`/api/gallery/`);
         setPhotos(data.photos);
     });
+
+    const downloadPhoto = (fileUrl: string) => {
+        const link = document.createElement('a');
+        link.href = fileUrl;
+        link.download = 'download.jpg';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
 
     useEffect(() => {
         getPhotos();
@@ -150,15 +159,23 @@ const Gallery = () => {
                                             unoptimized={true}
                                         />
                                         <div className="p-4">
-                                            <h1 className="text-sm font-medium mb-2">{item.title}</h1>
                                             <div className="flex justify-between text-xs font-medium">
-                                                <p>Date: {item.date}</p>
-                                                <button
-                                                    className="text-red-500 text-lg"
-                                                    onClick={() => deletePhoto(item)}
-                                                >
-                                                    <MdDelete />
-                                                </button>
+                                                <h1 className="text-sm font-medium">{item.title}</h1>
+                                                {/* <p>Date: {item.date}</p> */}
+                                                <div className="gao-x-2">
+                                                    <button
+                                                        className="text-red-500 text-lg"
+                                                        onClick={() => deletePhoto(item)}
+                                                    >
+                                                        <MdDelete />
+                                                    </button>
+                                                    {/* <button
+                                                        className="text-green-500 text-lg"
+                                                        onClick={() => downloadPhoto(item.photo)}
+                                                    >
+                                                        <MdDownload />
+                                                    </button> */}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

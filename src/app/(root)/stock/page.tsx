@@ -107,13 +107,14 @@ const Stock = () => {
                                             >
                                                 <Image
                                                     src={item.photo ? item.photo : Arduino}
-                                                    className="w-full h-32 object-contain mix-blend-multiply p-3 bg-gray-50"
+                                                    className="w-full h-auto object-cover mix-blend-multiply p-3 bg-gray-50"
                                                     alt="stock"
                                                     width={100}
                                                     height={100}
-                                                    priority
+                                                    loading="lazy"
+                                                    unoptimized={true}
                                                 />
-                                                <div className="w-full py-3 px-3 text-sm font-medium text-gray-800">
+                                                <div className="w-full pb-3 px-3 text-sm font-medium text-gray-800">
                                                     <h1 className="text-base font-semibold capitalize">
                                                         {item.name}
                                                     </h1>

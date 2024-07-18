@@ -69,7 +69,7 @@ const StockModal: FC<props> = ({
                                     ) : (
                                         <div className="w-full">
                                             <ImageCropUpload
-                                                aspect={1 / 1}
+                                                aspect={4/3}
                                                 onUploadComplete={(e) => (
                                                     updatePhoto(e), (values.photo = e)
                                                 )}

@@ -79,7 +79,7 @@ const ImageCropUpload: React.FC<props> = ({
     if (loading) return <Loader />;
     return (
         <div className="mt-1">
-            <Label className="pb-2">Upload photo</Label>
+            <Label className="pb-2">Upload photo {`(<3MB)`}</Label>
             {/* {uploadedImg ? (
                 <div className="flex items-center gap-x-2 w-48 h-48">
                     <Image

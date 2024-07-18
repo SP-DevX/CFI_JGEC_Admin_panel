@@ -21,11 +21,11 @@ export const config = {
         '/',
         '/notice',
         '/events',
-        "/alumni",
-        "/team",
+        "/member",
         "/stock",
         "/projects",
         "/certificate",
         "/alert",
+        "/gallery"
   ]
 }; 

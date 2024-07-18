@@ -177,15 +177,14 @@ const Members = () => {
                                                         {name}
                                                     </Table.Cell>
                                                     <Table.Cell className="!p-1">
-                                                        <div className="flex flex-wrap">
+                                                        <div className="flex flex-wrap text-title font-medium">
                                                             {position.map(ele => (
-                                                                <p className="text-xs" key={ele}>{ele},</p>
+                                                                <p className="text-xs" key={ele}>#{ele}</p>
                                                             ))}
                                                         </div>
                                                     </Table.Cell>
-                                                    <Table.Cell>
-                                                        <p>{year}</p>
-                                                        <p>{dept}</p>
+                                                    <Table.Cell className="p-2 text-center">
+                                                        {year}, {dept} dept. 
                                                     </Table.Cell>
                                                     <Table.Cell>
                                                         <div className="flex items-center gap-x-3 mb-1">

@@ -1,6 +1,8 @@
+import { connectDB } from "@/db/connection";
 import Notice from "@/model/noticeMode";
 import { NextRequest, NextResponse } from "next/server";
 
+connectDB();
 export async function POST(req: NextRequest) {
     try {
         const reqBody = await req.json();

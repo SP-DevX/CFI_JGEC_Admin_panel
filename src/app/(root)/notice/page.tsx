@@ -48,7 +48,7 @@ function Notice() {
 
     useEffect(() => {
         getAllNotices();
-    }, [openModal]);
+    }, [openModal, noticeDetails]);
 
     return (
         <Layout header="Notice">
